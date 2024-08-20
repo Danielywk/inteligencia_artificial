@@ -1,0 +1,61 @@
+---
+title: "R Notebook"
+author: isa
+date: 16/08/22
+output: html_notebook
+---
+
+```{r}
+#CLASIFICACIÓN
+edadCtres <- conclave[conclave$AYO_PARTICIPACION == 1903,]
+edadUcuatro <- conclave[conclave$AYO_PARTICIPACION == 1914,]
+edadDdos <- conclave[conclave$AYO_PARTICIPACION == 1922,]
+edadTnueve <- conclave[conclave$AYO_PARTICIPACION == 1939,]
+edadCocho <- conclave[conclave$AYO_PARTICIPACION == 1958,]
+edadStres <- conclave[conclave$AYO_PARTICIPACION == 1963,]
+edadSocho <- conclave[conclave$AYO_PARTICIPACION == 1978,]
+edadCcinco <- conclave[conclave$AYO_PARTICIPACION == 2005,]
+edadUtres <- conclave[conclave$AYO_PARTICIPACION == 2013,]
+```
+
+The code chunk appears:
+```{r}
+#conclave <- read.csv("DatasetConclave.csv", header = TRUE)
+# DETERMINAR VARIANZA
+edadNueve <- data.frame(xi=edadUtres$EDAD_PARTICIPAR)
+
+edadNueve <- cbind(edadNueve, media = mean(edadNueve$xi))
+edadNueve <- cbind(edadNueve, diferencia = edadNueve$xi - edadNueve$media)
+edadNueve <- cbind(edadNueve, alcuadrado = edadNueve$diferencia^2)
+
+
+media <- mean(edadNueve$xi)
+edadNueve
+
+```
+```{r}
+sumatoria <- sum(edadNueve$alcuadrado)
+sumatoria
+```
+
+```{r}
+# VARIANZA
+varianza <- sumatoria / (116-1)
+varianza
+```
+
+```{r}
+#DESVIACIÓN ESTANDAR
+desviacion <- sqrt(varianza)
+desviacion
+```
+
+Type any R code in the chunk, for example:
+```{r}
+CV <- desviacion / media * 100
+CV
+```
+
+```{r}
+boxplot()
+```

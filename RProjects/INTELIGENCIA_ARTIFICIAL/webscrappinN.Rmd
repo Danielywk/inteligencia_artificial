@@ -1,0 +1,165 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+
+/Users/softcomputing/ciencia de datos
+```{r}
+library(rvest)
+library(tidyr)
+library(dplyr)
+library(stringr)
+```
+
+WEB SCRAPPING: APLICAR EL WEB SCRAPPING
+```{r}
+webpage <- read_html("https://es.wikipedia.org/wiki/Anexo:Cardenales")
+```
+
+LECTURA: LEER LAS TABLAS
+```{r}
+tablas <- html_table(webpage) 
+class(tablas)
+tablas
+```
+
+LECTURA DE TABLAS: AQUI SE LEE LAS TABLAS DEL CONSISTORIO NUEVO Y EL COLEGIO ELECTORES
+```{r}
+consistorio=(tablas[[2]])
+electores=(tablas[1])
+
+```
+
+
+```{r}
+str(consistorio)
+```
+
+```{r}
+str(electores)
+```
+
+
+EXISTE UN PROBLEMA: El atributo Edad es del tipo Char, hay que curarlo
+
+```{r}
+consistorio$Edad<-substr(consistorio$Edad,1,2)
+
+
+consistorio$Edad<- as.numeric(consistorio$Edad)
+
+
+```
+
+COMPROBANDO LA CURA
+```{r}
+class(consistorio$Edad)
+```
+VERIFICANDO LA CURA
+
+```{r}
+consistorio$Edad
+```
+
+VERIFICANDO QUE EL DATASET VAYA TENIENDO FORMA
+
+```{r}
+str(consistorio)
+```
+
+
+```{r}
+consistorio<-select(consistorio,Nombre,País,Edad,Cargo)
+```
+
+```{r}
+View(consistorio)
+```
+
+
+
+REPITIENDO CON ELECTORES
+```{r}
+
+str(electores)
+
+```
+
+CURANDO ELECTORES
+
+```{r}
+electoresT<-as.data.frame(electores[1])
+```
+
+```{r}
+View(electoresT)
+```
+
+```{r}
+str(electoresT)
+```
+CURANDO LA EDAD DE LA TABLA ELECTORES
+
+```{r}
+
+electoresT$Edad<-substr(electoresT$Edad,1,2)
+
+electoresT$Edad<-as.numeric(electoresT$Edad)
+
+```
+VERIFICANDO LA CURA DE LA TABLA ELECTORES
+
+```{r}
+str(electoresT$Edad)
+```
+
+
+```{r}
+str(electoresT)
+
+```
+
+
+```{r}
+electoresT<-select(electoresT,Nombre,País,Edad,Cargo)
+```
+
+
+```{r}
+View(electoresT)
+```
+
+
+```{r}
+electoresT<-electoresT[electoresT$Edad <80,]
+```
+
+```{r}
+View(electoresT)
+```
+
+
+```{r}
+nuevoColegio<-rbind(consistorio,electoresT)
+```
+
+```{r}
+str(nuevoColegio)
+```
+
+```{r}
+View(nuevoColegio)
+```
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+

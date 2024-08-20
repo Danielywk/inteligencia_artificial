@@ -1,0 +1,21 @@
+---
+title: "EMOCIONES"
+author: "ISAIAS AMADO"
+date: "5/25/2023"
+output: html_document
+---
+
+# LIBRERIAS
+```{r}
+
+```
+
+
+# ABRIENDO DATAS
+```{r}
+data1 <- read.csv("resultadosDataFInal.csv", header = TRUE)
+data2 <- read.csv("resultadosDataEditadoFInal.csv", header = TRUE)
+data3 <- read.csv("palabras_frecuentesDataEditadoFInal.csv", header = TRUE)
+data4 <- read.csv("palabras_frecuentesDataFInal.csv", header = TRUE)
+```
+

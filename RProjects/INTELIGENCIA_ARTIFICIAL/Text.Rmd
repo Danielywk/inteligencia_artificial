@@ -1,0 +1,271 @@
+```{r}
+# Cargar librerias
+library(dplyr)
+library(lubridate)
+library(nortest)
+
+rendimientos<-read.csv("rendimientos.csv", header=TRUE)
+```
+
+```{r}
+#p1<-meon(rendimientos$fibraJVN)
+p2<-mean(rendimientos$fibraw1k)
+#p3<-mean(rendimientos$Bitcoin)
+#p4<-mean(rendimientos$Cardano) 
+p5<-mean(rendimientos$etc_usd)
+p6<-mean(rendimientos$Aluminio)
+#p7<-mean(rendimientos$Cobre)
+p8<-mean(rendimientos$Paladio)
+p9<-mean(rendimientos$Plata)
+p10<-mean(rendimientos$Etf)
+```
+
+```{r}
+activos<-(matrix(c(p2, p5,p6, p8, p9, p10)))*1
+vba<-matrix(6,6)
+ma<-matrix(1:1,6,6)
+vba<-select(rendimientos, -Mes, -fibraJVN, -Bitcoin, -Cardano, -Cobre)
+```
+
+```{r}
+activos<-as.numeric(unlist(activos))
+ma<-cov(vba)
+macov<-matrix(c(ma),6,6)
+```
+
+```{r}
+m1<-matrix(1:100,100,6)
+mn1<- matrix(1:100, 100, 6)
+mn2<-matrix(1:100, 100,6) 
+mn3<-matrix(1:100, 100,6)
+hijos<-matrix(1:60,60,6)
+hijosn<-matrix(1:60,60,6)
+
+funcionObj1<-matrix()
+objetivoO<-matrix()
+fobjetivo<-matrix() 
+objetivo<-matrix()
+vec<-matrix()
+estudioge<-matrix()
+```
+
+```{r}
+for(j in 1:6)
+{
+for(i in 1:100)
+{
+m1[i,j]<-runif(1,0,1)
+}
+}
+```
+
+```{r}
+# normalizar
+for(i in 1:100){
+aa<-m1[i,] 
+b<-sum(aa) 
+mn1[i,]<-aa/b
+}
+```
+
+```{r}
+for(i in 1:100)
+{
+resu<-0
+r<-0
+for (j in 1:6){
+    r<-(activos[j]*mn1[i,j])+{r}
+    # r1[i]<-sum(r)
+}
+######ORTIENDO RIESGO
+
+for (t in 1:6){
+
+for (h in 1:6){
+
+resu<-(macov[t,h]*mn1[i,t]*mn1[i,h])+resu
+}
+}
+####funcion objetivo listo 
+objetivo[i]<-r/resu
+}
+```
+
+```{r}
+# Ordenamiento
+fobjetivo<-as.numeric(unlist(objetivo)) 
+#funcionObj1[ciclo]<-max(fobjetivo)
+
+objetivoO<-sort(fobjetivo, decreasing=TRUE) ##ordenar padres
+
+for (i in 1:100) {
+for (j in 1:100){
+if(objetivoO[i]==fobjetivo[j])
+  {
+mn2[i,]<-mn1[j,]
+}
+}
+}
+```
+
+```{r}
+# Selección 60 parejas
+mn3<-matrix(1:60,60,6)
+maxru=max(objetivoO);
+minru=min(objetivoO);
+porcr=60
+
+for (k in 1:porcr){
+rul=minru+((maxru-minru)*(runif(1,0,1)))
+n=100
+
+while (n>1) {
+if((rul>objetivoO[n])&(rul<objetivoO[n-1])){
+mn3[k,]<-mn2[n,]
+n<-1
+}else{
+n=n-1
+}
+}
+}
+```
+
+```{r}
+# Elementos que se van a cruzar de 2 en 2
+valor_alpha<-runif(1,0,1)
+#valor_alpha<-0.5
+#alpha<-0.7
+
+for (i in seq(1,60,by=2)){
+for (j in 1:6) {
+
+a<-max(mn3[i,j],mn3[i+1,j])
+b<-min(mn3[i,j],mn3[i+1,j])
+I=a-b
+limi=abs((b-(I*valor_alpha))) 
+lims=(a+(I*valor_alpha))
+hijos[i,j]=runif(1,min=limi, max=lims)
+hijos[i+1, j]=runif(1,min = limi,max=lims)
+
+#hijos[i,j]-(mn3[i,j]*valor_alpha)+ ((1-valor_alpha)*mn3[i+1, j]) 
+#hijos[i+1, j]-(mn3[i+1, j]*valor_alpha)+((1-valor_alpha)*mn3[i,j])
+}
+}
+```
+
+```{r}
+# Normalización
+for(i in 1:60){
+aa<-abs(hijos[i,]) 
+b<-sum(aa) 
+hijosn[i,]<-aa/b
+}
+```
+
+```{r}
+# Mutación: elección de 3 cromosomas
+inde1=round(runif(1,1,59))
+inde2=round(runif(1,1,59))
+while (inde1==inde2) {
+inde2=round(runif(1,1,59))
+}
+inde3=round(runif(1,1,59))
+
+while((inde1==inde3) || (inde2==inde3)){ 
+    inde3=round(runif(1,1,59))
+}
+```
+
+```{r}
+# Mutación uniforme
+for (j in 1:6) {
+vec[j]<-hijosn[inde1,j]
+}
+
+ctl<-(max(vec)-min(vec))/1
+
+for (j in 1:6) {
+#hijosn[inde, j]<-abs(hi josn[inde, j]+rnorm(1,0,ctl))
+hijosn[inde1, j]<-runif(1,min(hijos[,j]),max (hijos[,j]))
+hijosn[inde2, j]<-runif(1,min(hijos[,j]),max(hijos[,j])) 
+hijosn[inde3, j]<-runif(1,min(hijos[,j]),max(hijos[,j]))
+}
+
+hijosn[inde1,]<-hijosn[inde1,]/sum(hijosn[inde1,])
+hijosn[inde2,]<-hijosn[inde2,]/sum(hijosn[inde2,])
+hijosn[inde3,]<-hijosn[inde3,]/sum (hijosn[inde3,])
+```
+
+```{r}
+# Reemplazo de los hijos
+for (jj in 1:60) {
+mn2[40+jj,]<-hijosn[jj,]
+}
+mn1<-mn2
+```
+
+```{r}
+
+
+```
+
+```{r}
+x<-seq(1:1500)
+plot(x, funcionObj1 ,type="l", log = 'x', xlab = "Iteraciones", ylab = "Función objetivo: Ganancia-Riesgo", col="red")
+```
+
+```{r}
+algen<-read.csv("AG.csv", header=TRUE)
+edif<-read.csv("EF.csv", header=TRUE)
+```
+
+```{r}
+hist(algen$G, prob = TRUE, main = "Histograma Algoritmo Genético", ylab = "Frecuencia")
+k<- seq(min(algen$G), max(algen$G), length = 40)
+l<- dnorm(k, mean = mean(algen$G), sd = sd(algen$G))
+lines(k, l, col = "red", lwd = 2)
+```
+
+```{r}
+hist(edif$G, prob = TRUE, main = "Histograma Evolución Diferencial", ylab = "Frecuencia")
+k<- seq(min(edif$G), max(edif$G), length = 40)
+l<- dnorm(k, mean = mean(edif$G), sd = sd(edif$G))
+lines(k, l, col = "red", lwd = 2)
+```
+
+```{r}
+hist(algen$R, prob = TRUE, main = "Histograma con curva de normalidad", ylab = "Frecuencia")
+k<- seq(min(algen$R), max(algen$R), length = 40)
+l<- dnorm(k, mean = mean(algen$R), sd = sd(algen$R))
+lines(k, l, col = "red", lwd = 2)
+```
+```{r}
+hist(edif$R, prob = TRUE, main = "Histograma con curva de normalidad", ylab = "Frecuencia")
+k<- seq(min(edif$R), max(edif$R), length = 40)
+l<- dnorm(k, mean = mean(edif$R), sd = sd(edif$R))
+lines(k, l, col = "red", lwd = 2)
+```
+```{r}
+shapiro.test(algen$G)
+shapiro.test(algen$R)
+shapiro.test(edif$G)
+shapiro.test(edif$R)
+```
+```{r}
+hist(edif$G, freq = FALSE, main = "Curva densidad", ylab = "Densidad")
+lines(density(edif$G), lwd = 2, col = 'red')
+```
+```{r}
+histDenNorm <- function (x, ...) {
+  hist(x, ...) # Histograma
+  lines(density(x), col = "blue", lwd = 2) # Densidad
+  x2 <- seq(min(x), max(x), length = 40)
+  f <- dnorm(x2, mean(x), sd(x))
+  lines(x2, f, col = "red", lwd = 2) # Normal
+  legend("topright", c("Histograma", "Densidad", "Normal"), box.lty = 0,
+         lty = 1, col = c("black", "blue", "red"), lwd = c(1, 2, 2))
+}
+```
+```{r}
+
+```

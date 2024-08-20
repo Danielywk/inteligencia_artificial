@@ -1,0 +1,75 @@
+
+```{r}
+install.packages("DChaos")
+library(DChaos)
+```
+
+```{r}
+install.packages("dplyr")
+```
+
+```{r}
+library(stats)
+library(dplyr)
+library(DChaos)
+```
+
+Primero creamos un dataframe con el contenido de los csv
+```{r}
+sismosJ <- read.csv("sismos_japan.csv", header = TRUE)
+sismosM <- read.csv("sismos_mexico.csv", header = TRUE)
+```
+
+
+```{r}
+library(dplyr)
+
+sismos_mex <- sismosM %>%
+select(depth, mag) %>%
+mutate(pais = "Mexico")
+
+sismos_jap <- sismosJ %>%
+select(depth, mag) %>%
+mutate(pais = "Japon")
+```
+
+```{r}
+sismos_totales <- rbind(sismos_mex, sismos_jap)
+datos <- sismos_totales[, c("depth", "mag")]
+datos_norm <- scale(datos)
+cluster <- kmeans(datos_norm, 3)
+plot(datos, col = ifelse(sismos_totales$pais == "Mexico", "red", "blue"), pch = 16)
+```
+
+
+```{r}
+table(cluster$cluster)
+
+barplot(table(cluster$cluster))
+```
+
+
+
+```{r}
+    sismos_mex <- sismosM %>%
+    select(latitude, mag, depth) %>%
+    mutate(pais = "Mexico")
+
+    sismos_jap <- sismosJ %>%
+    select(latitude, mag, depth) %>%
+    mutate(pais = "Japon")
+```
+
+```{r}
+sismos_totales <- rbind(sismos_mex, sismos_jap)
+datos <- sismos_totales[, c("latitude", "mag", "depth")]
+datos_norm <- scale(datos)
+cluster <- kmeans(datos_norm, 3)
+plot(datos, col = ifelse(sismos_totales$pais == "Mexico", "red", "blue"), pch = 16)
+```
+
+```{r}
+table(cluster$cluster)
+
+barplot(table(cluster$cluster))
+```

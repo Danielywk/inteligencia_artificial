@@ -1,0 +1,60 @@
+---
+title: "R Notebook"
+author: isa
+date: 06/09/22
+output: html_notebook
+---
+
+
+LEYENDO LA DATA
+```{r}
+dcovidprimero<-read.csv("covid1.csv", head = TRUE)
+dcovidsegundo<-read.csv("covid2.csv", head = TRUE)
+dcovidtercero<-read.csv("covid.csv", head = TRUE)
+```
+
+UNIENDO LA DATA
+```{r}
+nuevodcovid<-rbind(dcovidprimero, dcovidsegundo, dcovidtercero)
+```
+
+```{r}
+str(nuevodcovid)
+```
+
+
+CURANDO EL NUEVO DATASET
+```{r}
+dcovid<-nuevodcovid[nuevodcovid$FECHA_DEF!="9999-99-99",]
+```
+```{r}
+str(dcovid)
+```
+
+```{r}
+dcovid$PAIS_ORIGEN <- as.numeric(dcovid$PAIS_ORIGEN)
+```
+```{r}
+str(dcovid)
+```
+ELIMINANDO OUTLIERS
+```{r}
+boxplot(dcovid$EDAD)
+summary(dcovid$EDAD)
+```
+```{r}
+concovid <- dcovid[(dcovid$CLASIFICACION_FINAL>=1)&(dcovid$CLASIFICACION_FINAL<=3),]
+```
+MEDIA MÓVIL DE 7 DÍAS
+```{r}
+#num = 1:7
+#concovid <- mutate(media_movil = rollmean(num, k = 7 , fill = NA, align = "right"))
+```
+MEDIA MOVIL DE 15 DÍAS
+```{r}
+#concovid <- mutate(media_movil = rollmean(concovid$CLASIFICACION_FINAL, k = 15 , fill = NA, align = "right"))
+```
+MEDIA MOVIL DE 30 DÍAS
+```{r}
+#concovid <- mutate(media_movil = rollmean(concovid$CLASIFICACION_FINAL, k = 30 , fill = NA, align = "right"))
+```

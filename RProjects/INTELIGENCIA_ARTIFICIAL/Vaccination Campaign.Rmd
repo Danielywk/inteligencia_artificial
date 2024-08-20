@@ -1,0 +1,262 @@
+---
+title: "Vaccination Campaign"
+output: html_notebook
+---
+
+```{r}
+
+dcovid<-read.csv("covid.csv", header=TRUE)
+head(dcovid)
+View(dcovid)
+mujeresx<-dcovid[dcovid$SEXO==1,]
+mujeresxE<-dcovid[dcovid$EDAD,]
+mujeresF<-mujeresx[mujeresx$FECHA_DEF!="9999-99-99",]
+mujeresN<-mujeresF[mujeresF$NEUMONIA==1,]
+dcovidGX<-mujeresN[mujeresN$ENTIDAD_RES==J,]
+```
+
+```{r}
+#ADULT WOMEN AND MEN DECEASED BY COVID
+mujeresxA<-dcovid[dcovid$SEXO==1,]
+dcovidmA<-mujeresxA[(mujeresxA$EDAD>=27)&(mujeresxA$EDAD<=59),]
+nrow(dcovidmA)
+genML<-dcovidmA[(dcovidmA$CLASIFICACION_FINAL!=4),]
+genMNL<-genML[(genML$CLASIFICACION_FINAL!=5),]
+genMC<-genMNL[(genMNL$CLASIFICACION_FINAL!=6),]
+genMN<-genMC[(genMC$CLASIFICACION_FINAL!=7),]
+str(genMN)
+genF<-genMN[(genMN$FECHA_DEF!="9999-99-99"),]
+#genK<-genF[(genF$CLASIFICACION_FINAL==1),]
+#genM<-genF[(genF$CLASIFICACION_FINAL==2),]
+genN<-genF[(genF$CLASIFICACION_FINAL>=1)&(genF$CLASIFICACION_FINAL<=3),]
+
+hombresxA<-dcovid[dcovid$SEXO==2,]
+dcovidhA<-hombresxA[(hombresxA$EDAD>=27)&(hombresxA$EDAD<=59),]
+nrow(dcovidhA)
+genHL<-dcovidhA[(dcovidhA$CLASIFICACION_FINAL!=4),]
+genHNL<-genHL[(genHL$CLASIFICACION_FINAL!=5),]
+genHC<-genHNL[(genHNL$CLASIFICACION_FINAL!=6),]
+genHN<-genHC[(genHC$CLASIFICACION_FINAL!=7),]
+str(genHN)
+genFH<-genHN[(genHN$FECHA_DEF!="9999-99-99"),]
+#genK<-genF[(genF$CLASIFICACION_FINAL==1),]
+#genM<-genF[(genF$CLASIFICACION_FINAL==2),]
+genNH<-genFH[(genFH$CLASIFICACION_FINAL>=1)&(genFH$CLASIFICACION_FINAL<=3),]
+```
+
+```{r}
+i=1
+Entidad<-seq(min(genN$ENTIDAD_RES),max(genN$ENTIDAD_RES))
+mujeresAdef<-matrix()
+for (j in Entidad) {
+  mujeresconC<-genN[genN$ENTIDAD_RES==j,]
+  mujeresAdef[i]<-nrow(mujeresconC)
+  i=i+1
+  
+}
+tablaMA<-cbind(Entidad, mujeresAdef)
+View(tablaMA)
+#TOTAL DE MUJERES ADULTAS CONTAGIADAS POR CORONAVIRUS
+TotalMAF<-nrow(genN)
+View(TotalMAF)
+i=1
+Entidad<-seq(min(genNH$ENTIDAD_RES),max(genNH$ENTIDAD_RES))
+hombresAdef<-matrix()
+for (j in Entidad) {
+  hombresconC<-genNH[genNH$ENTIDAD_RES==j,]
+  hombresAdef[i]<-nrow(hombresconC)
+  i=i+1
+  
+}
+tablaHA<-cbind(Entidad, hombresAdef)
+View(tablaHA)
+#TOTAL DE MUJERES ADULTAS CONTAGIADAS POR CORONAVIRUS
+TotalHAF<-nrow(genNH)
+View(TotalHAF)
+```
+
+```{r}
+#YOUNG WOMEN AND MEN KILLED BY COVID
+mujeresxJ<-dcovid[dcovid$SEXO==1,]
+dcovidmJ<-mujeresxJ[(mujeresxJ$EDAD>=18)&(mujeresxJ$EDAD<=26),]
+nrow(dcovidmJ)
+genMJL<-dcovidmJ[(dcovidmJ$CLASIFICACION_FINAL!=4),]
+genMJNL<-genMJL[(genMJL$CLASIFICACION_FINAL!=5),]
+genMJC<-genMJNL[(genMJNL$CLASIFICACION_FINAL!=6),]
+genMJN<-genMJC[(genMJC$CLASIFICACION_FINAL!=7),]
+str(genMJN)
+genFMJ<-genMJN[(genMJN$FECHA_DEF!="9999-99-99"),]
+#genK<-genF[(genF$CLASIFICACION_FINAL==1),]
+#genM<-genF[(genF$CLASIFICACION_FINAL==2),]
+genNMJ<-genFMJ[(genFMJ$CLASIFICACION_FINAL>=1)&(genFMJ$CLASIFICACION_FINAL<=3),]
+
+hombresxJ<-dcovid[dcovid$SEXO==2,]
+dcovidhJ<-hombresxJ[(hombresxJ$EDAD>=18)&(hombresxJ$EDAD<=26),]
+nrow(dcovidhJ)
+genHJL<-dcovidhJ[(dcovidhJ$CLASIFICACION_FINAL!=4),]
+genHJNL<-genHJL[(genHJL$CLASIFICACION_FINAL!=5),]
+genHJC<-genHJNL[(genHJNL$CLASIFICACION_FINAL!=6),]
+genHJN<-genHJC[(genHJC$CLASIFICACION_FINAL!=7),]
+str(genHJN)
+genFHJ<-genHJN[(genHJN$FECHA_DEF!="9999-99-99"),]
+#genK<-genF[(genF$CLASIFICACION_FINAL==1),]
+#genM<-genF[(genF$CLASIFICACION_FINAL==2),]
+genNHJ<-genFHJ[(genFHJ$CLASIFICACION_FINAL>=1)&(genFHJ$CLASIFICACION_FINAL<=3),]
+```
+
+```{r}
+i=1
+Entidad<-seq(min(genNMJ$ENTIDAD_RES),max(genNMJ$ENTIDAD_RES))
+mujeresJdef<-matrix()
+for (j in Entidad) {
+  mujeresconCJ<-genNMJ[genNMJ$ENTIDAD_RES==j,]
+  mujeresJdef[i]<-nrow(mujeresconCJ)
+  i=i+1
+  
+}
+tablaMJ<-cbind(Entidad, mujeresJdef)
+View(tablaMJ)
+#TOTAL DE MUJERES ADULTAS CONTAGIADAS POR CORONAVIRUS
+TotalMJF<-nrow(genNMJ)
+View(TotalMJF)
+
+i=1
+Entidad<-seq(min(genNHJ$ENTIDAD_RES),max(genNHJ$ENTIDAD_RES))
+hombresJdef<-matrix()
+for (j in Entidad) {
+  hombresconCJ<-genNHJ[genNHJ$ENTIDAD_RES==j,]
+  hombresJdef[i]<-nrow(hombresconCJ)
+  i=i+1
+  
+}
+tablaHJ<-cbind(Entidad, hombresJdef)
+View(tablaHJ)
+#TOTAL DE MUJERES ADULTAS CONTAGIADAS POR CORONAVIRUS
+TotalHJF<-nrow(genNHJ)
+View(TotalHJF)
+```
+
+```{r}
+hist(TotalMAF)
+```
+
+```{r}
+hist(genN$EDAD)
+hist(genNH$EDAD)
+hist(genNMJ$EDAD)
+hist(genNHJ$EDAD)
+```
+
+```{r}
+hist(genN$EDAD, main ="Adult womens dead for covid ", xlab="Age",ylab="Cases")
+
+hist(genNH$EDAD, main ="Adult mens dead for covid ", xlab="Age",ylab="Cases")
+
+hist(genNMJ$EDAD, main ="Young womens dead for covid ", xlab="Age",ylab="Cases")
+
+hist(genNHJ$EDAD, main ="Young mens dead for covid ", xlab="Age",ylab="Cases")
+
+```
+
+```{r}
+boxplot(genN$EDAD, main ="Adult womens dead for covid ", xlab="Age",ylab="Cases")
+
+boxplot(genNH$EDAD, main ="Adult mens dead for covid ", xlab="Age",ylab="Cases")
+
+boxplot(genNMJ$EDAD, main ="Young womens dead for covid ", xlab="Age",ylab="Cases")
+
+boxplot(genNHJ$EDAD, main ="Young mens dead for covid ", xlab="Age",ylab="Cases")
+
+```
+
+```{r}
+summary(genN$EDAD)
+summary(genNH$EDAD)
+summary(genNMJ$EDAD)
+summary(genNHJ$EDAD)
+```
+
+```{r}
+outL<-boxplot(genN$EDAD)
+ValorOutHA=outL$out
+sort(ValorOutHA)
+
+jj=seq(max(ValorOutHA), min(ValorOutHA))
+i=1
+tablonHA<-matrix()
+for (ii in jj) {
+  
+auxA<-genN[genN$EDAD==ii,]
+tablonHA[i]<-nrow(auxA)
+i<-i+1
+}
+head(auxA)
+tablaHADef<-cbind(jj, tablonHA)
+View(tablaHADef)
+```
+
+```{r}
+Edo<-seq(1:32)
+promedio<-matrix()
+desviacionS<-matrix()
+minimo<-matrix()
+maximo<-matrix()
+varianza<-matrix()
+primer_q<-matrix()
+tercer_q<-matrix()
+i_qr<-matrix()
+for (ii in 1:32) {
+  genN1<-genN[genN$ENTIDAD_NAC==ii, ]
+               promedio[ii]<-mean(genN1$EDAD)
+               desviacionS[ii]<- sd(genN1$EDAD)
+               minimo[ii]<-min(genN1$EDAD)
+               maximo[ii]<-max(genN1$EDAD)
+               varianza[ii]<-var(genN1$EDAD)
+               primer_q[ii]<-quantile(genN1$EDAD, probs = 0.25)
+               tercer_q[ii]<-quantile(genN1$EDAD, probs = 0.75)
+               i_qr[ii]<-IQR(genN1$EDAD)
+               
+}
+````
+
+```{r}
+ESTADOS<-matrix(c("AGUASCALIENTES",
+"BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "COAHUILA DE ZARAGOZA", "COLIMA", "CHIAPAS", "CHIHUAHUA", "CIUDAD DE MÉXICO", "DURANGO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MÉXICO", "MICHOACÁN DE OCAMPO", "MORELOS","NAYARIT", "NUEVO LEÓN", "OAXACA", "PUEBLA", "QUERÉTARO", "QUINTANA ROO", "SAN LUIS POTOSÍ", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ DE IGNACIO DE LA LLAVE", "YUCATÁN", "ZACATECAS"))
+tablaMAM<- cbind.data.frame(ESTADOS, promedio, desviacionS, minimo, maximo, varianza, primer_q, tercer_q, i_qr)
+View(tablaMAM)
+````
+
+```{r}
+Edo<-seq(1:32)
+promedioHA<-matrix()
+desviacionSHA<-matrix()
+minimoHA<-matrix()
+maximoHA<-matrix()
+varianzaHA<-matrix()
+primer_qHA<-matrix()
+tercer_qHA<-matrix()
+i_qrHA<-matrix()
+for (ii in 1:32) {
+  genN1H<-genNH[genNH$ENTIDAD_NAC==ii, ]
+               promedioHA[ii]<-mean(genN1H$EDAD)
+               desviacionSHA[ii]<- sd(genN1H$EDAD)
+               minimoHA[ii]<-min(genN1H$EDAD)
+               maximoHA[ii]<-max(genN1H$EDAD)
+               varianzaHA[ii]<-var(genN1H$EDAD)
+               primer_qHA[ii]<-quantile(genN1H$EDAD, probs = 0.25)
+               tercer_qHA[ii]<-quantile(genN1H$EDAD, probs = 0.75)
+               i_qrHA[ii]<-IQR(genN1H$EDAD)
+}
+````
+
+```{r}
+tablaHAM<- cbind.data.frame(ESTADOS, promedioHA, desviacionSHA, minimoHA, maximoHA, varianzaHA, primer_qHA, tercer_qHA, i_qrHA)
+View(tablaHAM)
+````
+
+```{r}
+lillie.test(genN$EDAD)
+```
+```{r}
+
+```

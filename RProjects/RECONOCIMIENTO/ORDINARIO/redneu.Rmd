@@ -1,0 +1,203 @@
+---
+title: "Untitled"
+output: pdf_document
+date: "2023-06-21"
+---
+
+```{r}
+#Carga de librerias y intr
+# install.packages("tensorflow")
+# install.packages("magrittr")
+# install.packages("keras")
+# install.packages("tidyverse")
+library(keras)
+library(tidyverse)
+library(tensorflow)
+install_keras()
+```
+```{r}
+# Cargar los datos
+setwd("/Users/isa/IdeaProjects/RProjects/RECONOCIMIENTO/")
+data <- read.csv("movie_metadata.csv", header = TRUE)
+
+```
+```{r}
+#Eliminacion de NA
+data <- na.omit(data)
+```
+
+```{r}
+# Seleccionar las columnas a normalizar
+columnas_a_normalizar <- c("num_critic_for_reviews", "budget", "imdb_score")
+```
+```{r}
+# Normalizar las columnas seleccionadas
+data[columnas_a_normalizar] <- scale(data[columnas_a_normalizar])
+
+```
+
+```{r}
+# Preprocesamiento de datos
+selected_columns <- c("num_critic_for_reviews", "budget", "imdb_score")
+data <- data[, selected_columns]
+
+```
+```{r}
+# Dividir los datos en conjunto de entrenamiento y prueba
+set.seed(123)
+train_indices <- sample(1:nrow(data), 0.7 * nrow(data))
+train_data <- data[train_indices, ]
+test_data <- data[-train_indices, ]
+
+```
+```{r}
+# Normalizar los datos de entrenamiento utilizando la función `scale`
+scaled_train_data <- scale(train_data)
+```
+```{r}
+# Crear el modelo de la red neuronal
+model <- keras_model_sequential()
+model %>%
+  layer_dense(units = 32, activation = "relu", input_shape = dim(scaled_train_data)[2]) %>%
+  layer_dense(units = 16, activation = "relu") %>%
+  layer_dense(units = 1)
+
+```
+```{r}
+# Compilar el modelo
+model %>% compile(
+  loss = "mean_squared_error",
+  optimizer = optimizer_adam(),
+  metrics = c("mean_absolute_error")
+)
+```
+```{r}
+# Entrenar el modelo
+history <- model %>% fit(
+  x = as.matrix(scaled_train_data),
+  y = train_data$imdb_score,
+  epochs = 100,
+  validation_split = 0.2
+)
+
+```
+
+```{r}
+# Evaluar el modelo en los datos de prueba
+scaled_test_data <- scale(test_data)
+loss_metrics <- model %>% evaluate(
+  x = as.matrix(scaled_test_data),
+  y = test_data$imdb_score
+)
+```
+
+
+```{r}
+# Imprimir métricas de evaluación
+print(loss_metrics)
+```
+# Prediccion de Buena y mala de todo el dataset normalizado
+```{r}
+# Realizar predicciones en los datos
+test_predictions <- model %>% predict(as.matrix(scaled_test_data))
+```
+```{r}
+# Establecer umbral para determinar si la predicción es buena o mala
+umbral1 <- 0.5
+```
+```{r}
+# Clasificar la calidad basada en las predicciones
+predicciones_calidad <- ifelse(test_predictions >= umbral1, "Buena", "Mala")
+```
+```{r}
+# Agregar la columna de predicciones de calidad al dataframe de datos de prueba
+test_data$Calidad <- predicciones_calidad
+```
+```{r}
+# Imprimir el dataframe con las predicciones de calidad
+print(test_data)
+```
+
+
+
+
+```{r}
+nuevos_datos <- data.frame(
+  num_critic_for_reviews = c(4.347121871, 2.283427477, 2.307706234
+),
+  budget = c(0.77494443, 0.90844411, 0.79719438),
+  imdb_score = c(1.54491287, 0.22121355, 0.31576350)
+)
+```
+
+```{r}
+# Normalizar los nuevos datos
+scaled_nuevos_datos <- scale(nuevos_datos)
+```
+```{r}
+# Realizar predicciones con los nuevos datos
+predicciones <- model %>% predict(as.matrix(scaled_nuevos_datos))
+```
+```{r}
+# Mostrar los nuevos datos y las predicciones
+nuevos_datos <- cbind(nuevos_datos, predicciones)
+print(nuevos_datos)
+```
+```{r}
+# Establecer umbral para determinar si la predicción es buena o mala
+umbral <- 0.5
+
+# Agregar columna "Calidad" al dataframe indicando si la predicción es buena o mala
+nuevos_datos$Calidad <- ifelse(abs(predicciones - nuevos_datos$imdb_score) <= umbral, "Buena", "Mala")
+
+# Mostrar los nuevos datos y las predicciones con la columna "Calidad"
+print(nuevos_datos)
+```
+
+#Intento de hacer una prediccion con un solo dato del data frame
+
+```{r}
+
+# Datos para la predicción
+nuevo_dato <- data.frame(
+  num_critic_for_reviews = 1.279905497
+,
+  budget = 0.95294400,
+  imdb_score = 1.26126301
+)
+```
+
+```{r}
+nuevo_dato_mat <- as.matrix(nuevo_dato)
+```
+
+```{r}
+# Normalizar el nuevo dato
+scaled_nuevo_dato <- scale(nuevo_dato_mat)
+```
+```{r}
+# Realizar la predicción
+prediccion <- model %>% predict(as.matrix(scaled_nuevo_dato))
+
+```
+```{r}
+# Establecer umbral para determinar si la predicción es buena o mala
+umbralNu <- 0.3
+```
+
+```{r}
+
+# Clasificar la calidad basada en la predicción
+calidad <- ifelse(prediccion >= umbralNu, "Buena", "Mala")
+```
+
+
+```{r}
+# Agregar la columna de calidad al dataframe del nuevo dato
+nuevo_dato$Calidad <- calidad
+```
+```{r}
+# Imprimir el dataframe con la columna de calidad
+print(nuevo_dato)
+```
+

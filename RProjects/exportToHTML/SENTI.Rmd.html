@@ -1,0 +1,244 @@
+<html>
+<head>
+<title>SENTI.Rmd</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cfd2d5;}
+.s1 { color: #8ea765;}
+.s2 { color: #808080;}
+.s3 { color: #cc7832;}
+.s4 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#232425">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SENTI.Rmd</font>
+</center></td></tr></table>
+<pre><span class="s0">---</span>
+<span class="s0">title: &quot;SENTIMIENTOS&quot; 
+author: &quot;ISAIAS AMADO CARREÑO&quot; 
+date: &quot;2022-11-26&quot; 
+output: 
+  html_document: default 
+  pdf_document: default</span>
+<span class="s0">---</span>
+<span class="s0"># ESTABLECIENDO EL WORKSPACE</span>
+<span class="s0">```{r}</span>
+<span class="s0">setwd(</span><span class="s1">&quot;/Users/isa/CLionProjects/RProjects/Ciencia de los datos/2doParcial&quot;</span><span class="s0">)</span>
+<span class="s0">```</span>
+
+<span class="s0"># ADQUIRIENDO LA DATA</span>
+
+<span class="s0">```{r}</span>
+<span class="s2"># download.file(&quot;https://raw.githubusercontent.com/jboscomendoza/rpubs/master/sentimientos_afinn/lexico_afinn.en.es.csv&quot;, &quot;lexico_afinn.en.es.csv&quot;)</span>
+<span class="s0">```</span>
+
+
+<span class="s0"># INSTALANDO LIBRERIAS</span>
+
+<span class="s0">```{r}</span>
+<span class="s2"># install.packages(&quot;rtweet&quot;)</span>
+<span class="s2"># install.packages(&quot;tidytext&quot;)</span>
+<span class="s2"># install.packages(&quot;dplyr2&quot;)</span>
+<span class="s2"># install.packages(&quot;tidyverse&quot;)</span>
+<span class="s2"># install.packages(&quot;wordcloud&quot;)</span>
+<span class="s2"># install.packages(&quot;reshape2&quot;)</span>
+<span class="s2"># install.packages(&quot;RColorBrewer&quot;)</span>
+<span class="s0">```</span>
+
+
+<span class="s0">```{r}</span>
+<span class="s2">library(rtweet)</span>
+<span class="s0">library(tidytext)</span>
+<span class="s0">library(dplyr)</span>
+<span class="s0">library(tidyverse)</span>
+<span class="s0">library(wordcloud)</span>
+<span class="s0">library(reshape2)</span>
+<span class="s0">library(RColorBrewer)</span>
+<span class="s0">library(wordcloud)</span>
+<span class="s0">library(tm)</span>
+<span class="s0">library(lubridate)</span>
+<span class="s0">library(zoo)</span>
+<span class="s0">library(scales)</span>
+<span class="s0">library(ggplot2)</span>
+<span class="s0">```</span>
+
+<span class="s0"># COLOCANDO LAS CLAVES DE DESARROLLADOR DE TWITTER</span>
+
+<span class="s0">```{r}</span>
+<span class="s0">api_key &lt;- </span><span class="s1">&quot;ywPoDXO9bybuQE4Uu2iDsMA2C&quot;</span>
+<span class="s0">api_secret_key &lt;- </span><span class="s1">&quot;i8beATeiqUq9CIzfuHSKYysIknMDzcZO4MSDcvJd16RPMUV66f&quot;</span>
+<span class="s0">access_token &lt;- </span><span class="s1">&quot;1579133973099257856-iivwUZhAX5qqtJJRfpCJgG3qMmZa1T&quot;</span>
+<span class="s0">access_token_secret &lt;- </span><span class="s1">&quot;FxiXCqLzyyAOBzNrNjm7iGMSXTQvjKz2LcQZU9eXBSOeF&quot;</span>
+<span class="s0">app_name &lt;- </span><span class="s1">&quot;SeleccionMexico&quot;</span>
+<span class="s0">```</span>
+
+<span class="s0"># GURADANDO VALORES EN LA DATA TOKEN</span>
+
+<span class="s0">```{r}</span>
+<span class="s0">token &lt;- create_token(</span>
+  <span class="s0">app = app_name</span><span class="s3">,</span>
+  <span class="s0">consumer_key = api_key</span><span class="s3">,</span>
+  <span class="s0">consumer_secret = api_secret_key</span><span class="s3">,</span>
+  <span class="s0">access_token = access_token</span><span class="s3">,</span>
+  <span class="s0">access_secret = access_token_secret)</span>
+<span class="s0">```</span>
+
+<span class="s0"># LEYENDO TWEETS</span>
+
+<span class="s0">```{r}</span>
+<span class="s0">tweets &lt;- search_tweets(q=</span><span class="s1">&quot;#MexicoVsPolonia&quot;</span><span class="s3">,</span>
+                        <span class="s0">n= </span><span class="s4">1500</span><span class="s3">,</span>
+                        <span class="s0">include_rts = FALSE</span><span class="s3">,</span>
+                        <span class="s0">lang = </span><span class="s1">&quot;es&quot;</span><span class="s0">)</span>
+<span class="s0">```</span>
+<span class="s0">```{r}</span>
+<span class="s0">dim(tweets)</span>
+<span class="s0">```</span>
+
+<span class="s0"># MOSTRANDO TWEETS LEÍDOS</span>
+
+<span class="s0">```{r}</span>
+<span class="s0">names(tweets)</span>
+<span class="s0">```</span>
+
+
+<span class="s0">```{r}</span>
+<span class="s0">tweets_token &lt;- unnest_tokens(tbl=tweets</span><span class="s3">,</span>
+                              <span class="s0">output = </span><span class="s1">&quot;word&quot;</span><span class="s3">,</span>
+                              <span class="s0">input = </span><span class="s1">&quot;text&quot;</span><span class="s3">,</span>
+                              <span class="s0">token = </span><span class="s1">&quot;words&quot;</span><span class="s0">)</span>
+<span class="s0">```</span>
+
+<span class="s0">```{r}</span>
+<span class="s0">dim(tweets_token)</span>
+<span class="s0">```</span>
+
+<span class="s0"># CONTANDO LAS PALABRAS CON MAYOR FRECUENCIA</span>
+
+<span class="s0">```{r}</span>
+<span class="s0">count(tweets_token</span><span class="s3">,</span>
+      <span class="s0">word</span><span class="s3">,</span>
+      <span class="s0">sort = TRUE)</span>
+<span class="s0">```</span>
+
+<span class="s0">```{r}</span>
+<span class="s0">tweets_token &lt;- filter(tweets_token</span><span class="s3">, </span><span class="s0">word!=</span><span class="s1">&quot;de&quot; </span><span class="s0">&amp; word!=</span><span class="s1">&quot;que&quot; </span><span class="s0">&amp; word!=</span><span class="s1">&quot;el&quot; </span><span class="s0">&amp; word!=</span><span class="s1">&quot;https&quot; </span><span class="s0">&amp; word!=</span><span class="s1">&quot;t.co&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;en&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;la&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;a&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;un&quot; </span><span class="s0">&amp; word!=</span><span class="s1">&quot;los&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;fifaworldcup&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;se&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;y&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;del&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;por&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;es&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;con&quot; </span><span class="s0">&amp; word!=</span><span class="s1">&quot;mexicovspolonia&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;méxico&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;polonia&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;no&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;partido&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;lo&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;si&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;te&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;al&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;ya&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;mi&quot;</span><span class="s0">&amp; word!=</span><span class="s1">&quot;la&quot;</span><span class="s0">)</span>
+<span class="s0">```</span>
+
+<span class="s0">```{r}</span>
+<span class="s0">tweets_token %&gt;%</span>
+  <span class="s0">count(word</span><span class="s3">, </span><span class="s0">sort = TRUE) %&gt;%</span>
+  <span class="s0">filter(n &gt; </span><span class="s4">100</span><span class="s0">) %&gt;%</span>
+  <span class="s0">mutate(word = reorder(word</span><span class="s3">, </span><span class="s0">n)) %&gt;%</span>
+  <span class="s0">ggplot(aes(word</span><span class="s3">, </span><span class="s0">n)) +</span>
+  <span class="s0">geom_text(aes(label=n)</span><span class="s3">, </span><span class="s0">hjust= -</span><span class="s4">0.2</span><span class="s0">) +</span>
+  <span class="s0">geom_col() +</span>
+  <span class="s0">xlab(NULL) +</span>
+  <span class="s0">coord_flip()+</span>
+  <span class="s0">theme_minimal()</span>
+<span class="s0">```</span>
+
+<span class="s0">```{r}</span>
+<span class="s0">names(tweets_token)</span>
+<span class="s0">```</span>
+
+
+<span class="s0">```{r}</span>
+<span class="s0">afinn &lt;- read.csv(</span><span class="s1">&quot;lexico_afinn.en.es.csv&quot;</span><span class="s3">, </span><span class="s0">stringsAsFactors = F</span><span class="s3">, </span><span class="s0">fileEncoding = </span><span class="s1">&quot;latin1&quot;</span><span class="s0">) %&gt;%</span>
+  <span class="s0">tibble::as_tibble()</span>
+<span class="s0">diccionario&lt;-select(afinn</span><span class="s3">, </span><span class="s0">-Word) </span><span class="s2"># Forma simple 1</span>
+
+<span class="s0">```</span>
+
+<span class="s0"># ASIGNANDO VALORES A LAS PALABRAS ENCONTRADAS</span>
+
+<span class="s0">```{r}</span>
+<span class="s0">nov_corpus &lt;- Corpus(VectorSource(tweets_token))</span>
+
+
+<span class="s0">nov_tdm &lt;- TermDocumentMatrix(nov_corpus)</span>
+
+
+<span class="s0">nov_mat &lt;- as.matrix(nov_tdm)</span>
+
+<span class="s0">nov_mat &lt;- nov_mat %&gt;% rowSums() %&gt;% sort(decreasing = TRUE)</span>
+<span class="s0">nov_mat &lt;- data.frame(Palabra = names(nov_mat)</span><span class="s3">, </span><span class="s0">frec = nov_mat)</span>
+<span class="s0">nov_mat&lt;-nov_mat[!(nov_mat$Palabra ==</span><span class="s1">&quot;fuerza&quot;</span><span class="s0">)</span><span class="s3">,</span><span class="s0">]</span>
+
+<span class="s2"># View(nov_mat)</span>
+<span class="s0">```</span>
+
+
+<span class="s0"># GENERANDO TABALA</span>
+
+<span class="s0">```{r}</span>
+<span class="s2">tabla&lt;-inner_join(diccionario, nov_mat, by = &quot;Palabra&quot;) %&gt;%</span>
+  <span class="s0">mutate(Tipo = ifelse(Puntuacion &gt; </span><span class="s4">0</span><span class="s3">, </span><span class="s1">&quot;Positiva&quot;</span><span class="s3">, </span><span class="s1">&quot;Negativa&quot;</span><span class="s0">)) </span>
+
+<span class="s0">tabla2&lt;-mutate(tabla</span><span class="s3">,</span><span class="s0">puntaje=Puntuacion*frec)</span>
+<span class="s0">tabla2</span>
+<span class="s0">```</span>
+
+<span class="s0"># GUARDANDO EN DATAFRAMES PALABRAS POSITIVAS Y NEGATIVAS</span>
+
+<span class="s0">```{r}</span>
+<span class="s0">good &lt;- filter(tabla2</span><span class="s3">,</span><span class="s0">Tipo==</span><span class="s1">&quot;Positiva&quot;</span><span class="s0">)</span>
+
+
+<span class="s0">bad &lt;- filter(tabla2</span><span class="s3">,</span><span class="s0">Tipo==</span><span class="s1">&quot;Negativa&quot;</span><span class="s0">)</span>
+<span class="s0">```</span>
+
+<span class="s0"># GRAFICANDO LAS PALABRAS</span>
+
+<span class="s0">```{r}</span>
+<span class="s0">good &lt;- arrange(good</span><span class="s3">,</span><span class="s0">-frec)</span>
+<span class="s0">bad &lt;- arrange(bad</span><span class="s3">,</span><span class="s0">-frec)</span>
+
+<span class="s0">good1 &lt;- good[</span><span class="s4">1</span><span class="s0">:</span><span class="s4">15</span><span class="s3">,</span><span class="s0">]</span>
+<span class="s0">bad1 &lt;- bad[</span><span class="s4">1</span><span class="s0">:</span><span class="s4">15</span><span class="s3">,</span><span class="s0">]</span>
+
+<span class="s0">ggplot(data = good1</span><span class="s3">, </span><span class="s0">aes(x = Palabra</span><span class="s3">, </span><span class="s0">y=frec))+geom_col()+</span>
+    <span class="s0">coord_flip()</span>
+
+<span class="s0">ggplot(data = bad1</span><span class="s3">, </span><span class="s0">aes(x = frec</span><span class="s3">, </span><span class="s0">y=Palabra))+geom_col()</span>
+
+<span class="s0">```</span>
+
+
+<span class="s0">```{r}</span>
+<span class="s0">general &lt;-mean(tabla2$puntaje)</span>
+<span class="s0">general</span>
+<span class="s0">length(good$Palabra)</span>
+<span class="s0">length(bad$Palabra)</span>
+<span class="s0">```</span>
+
+<span class="s0"># OBTENIENDO RESULTADOS</span>
+
+<span class="s0">```{r}</span>
+
+<span class="s0">wordcloud(</span>
+  <span class="s0">words = good$Palabra</span><span class="s3">, </span>
+  <span class="s0">freq = good$frec</span><span class="s3">, </span>
+  <span class="s0">max.words = </span><span class="s4">20</span><span class="s3">, </span>
+  <span class="s0">random.order = F</span><span class="s3">, </span>
+  <span class="s0">colors=brewer.pal(name = </span><span class="s1">&quot;Dark2&quot;</span><span class="s3">, </span><span class="s0">n = </span><span class="s4">3</span><span class="s0">)</span>
+  <span class="s0">)</span>
+<span class="s2"># View(nov_mat)</span>
+
+<span class="s0">wordcloud(</span>
+  <span class="s0">words = bad$Palabra</span><span class="s3">, </span>
+  <span class="s0">freq = bad$frec</span><span class="s3">, </span>
+  <span class="s0">max.words = </span><span class="s4">20</span><span class="s3">, </span>
+  <span class="s0">random.order = F</span><span class="s3">, </span>
+  <span class="s0">colors=brewer.pal(name = </span><span class="s1">&quot;Dark2&quot;</span><span class="s3">, </span><span class="s0">n = </span><span class="s4">3</span><span class="s0">)</span>
+  <span class="s0">)</span>
+<span class="s2"># View(nov_mat)</span>
+
+<span class="s0">```</span>
+
+</pre>
+</body>
+</html>

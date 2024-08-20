@@ -1,0 +1,616 @@
+---
+title: "R Notebook"
+author: isa
+date: 24/08/22
+output: html_notebook
+---
+
+Isaias Amado Carreño
+ICO-24
+```{r}
+library(rvest)
+library(tidyr)
+library(dplyr)
+library(stringr)
+```
+
+APLICACIÓN DEL WEB SCRAPPING
+```{r}
+webpage <- read_html("https://es.wikipedia.org/wiki/Anexo:Cardenales")
+```
+LECTURA DE TABLAS
+```{r}
+tablas <- html_table(webpage)
+class(tablas)
+tablas
+```
+LECTURA DE LAS TABLAS DEL CONSISTORIO NUEVO Y EL COLEGIO ELECTORES
+```
+```{r}
+consistorio=(tablas[[2]])
+electores=(tablas[1])
+```
+
+
+```{r}
+str(consistorio)
+```
+
+
+```{r}
+str(electores)
+```
+
+
+
+EXISTE UN PROBLEMA: El atributo Edad es del tipo Char, hay que curarlo
+
+```{r}
+consistorio$Edad <- substr(consistorio$Edad, 1, 2)
+
+
+consistorio$Edad <- as.numeric(consistorio$Edad)
+
+
+```
+
+
+COMPROBANDO LA CURA
+```{r}
+class(consistorio$Edad)
+```
+
+VERIFICANDO LA CURA
+
+```{r}
+consistorio$Edad
+```
+
+
+VERIFICANDO QUE EL DATASET VAYA TENIENDO FORMA
+
+```{r}
+str(consistorio)
+```
+
+
+
+```{r}
+consistorio <- select(consistorio, Nombre, País, Edad, Cargo)
+```
+
+```{r}
+consistorio
+```
+
+
+
+REPITIENDO CON ELECTORES
+```{r}
+
+str(electores)
+
+```
+
+
+CURANDO ELECTORES
+
+```{r}
+electoresT <- as.data.frame(electores[1])
+```
+
+
+```{r}
+electoresT
+```
+
+
+```{r}
+str(electoresT)
+```
+
+CURANDO LA EDAD DE LA TABLA ELECTORES
+
+```{r}
+
+electoresT$Edad <- substr(electoresT$Edad, 1, 2)
+
+electoresT$Edad <- as.numeric(electoresT$Edad)
+
+```
+VERIFICANDO LA CURA DE LA TABLA ELECTORES
+
+```{r}
+str(electoresT$Edad)
+```
+
+
+
+```{r}
+str(electoresT)
+
+```
+
+
+
+```{r}
+electoresT <- select(electoresT, Nombre, País, Edad, Cargo)
+```
+
+
+
+```{r}
+electoresT
+```
+
+
+```{r}
+eVGRA32```
+
+```{r}
+electoresT
+```
+
+JUNTANDO ELECTORES Y NUEVOS ELECTORES
+```{r}
+nuevoColegio <- rbind(consistorio, electoresT)
+```
+
+```{r}
+str(nuevoColegio)
+```
+
+
+```{r}
+nuevoColegio
+```
+PARTE 2
+CURANDO LA COLUMNA PAIS
+```{r}
+# ELIMINAR NA's
+# nombre_data.cleaned <- na.omit(nombre_data)
+#gsub('.{21}$', '', nuevoColegio[1,2])
+extractoPais <- select(nuevoColegio, País)
+e1 <- gsub('.{21}$', '', extractoPais[1, 1])
+e2 <- gsub('.{9}$', '', extractoPais[2, 1])
+e3 <- gsub('.{8}$', '', extractoPais[3, 1])
+e4 <- gsub('.{7}$', '', extractoPais[4, 1])
+e5 <- gsub('.{9}$', '', extractoPais[5, 1])
+e6 <- gsub('.{4}$', '', extractoPais[6, 1])
+e7 <- gsub('.{6}$', '', extractoPais[7, 1])
+e8 <- gsub('.{8}$', '', extractoPais[8, 1])
+e10 <- gsub('.{8}$', '', extractoPais[10, 1])
+
+```
+
+```{r}
+Pais <- data.frame(
+  "Pais" = c(
+    e1,
+    e2,
+    e3,
+    e4,
+    e5,
+    e6,
+    e7,
+    e8,
+    "Francia",
+    e10,
+    "Canadá",
+    "Francia",
+    "España",
+    "Estados Unidos",
+    "Argentina",
+    "Italia",
+    "Polonia",
+    "Francia",
+    "Italia",
+    "India",
+    "México",
+    "Estados Unidos",
+    "Brasil",
+    "Kenía",
+    "Guinea",
+    "Estados Unidos",
+    "Suiza",
+    "Italia",
+    "Italia",
+    "Polonia",
+    "Sri Lanka",
+    "Alemania",
+    "Italia",
+    "Italia",
+    "Brasil",
+    "Italia",
+    "Italia",
+    "India",
+    "Canadá",
+    "República Checa",
+    "Paises Bajos",
+    "Italia",
+    "Estados Unidos",
+    "Alemania",
+    "Estados Unidos",
+    "India",
+    "Nigeria",
+    "Colombia",
+    "Filipinas",
+    "Italia",
+    "Alemania",
+    "Reino Unido",
+    "Nicaragua",
+    "Canadá",
+    "Costa de Marfil",
+    "Brasil",
+    "Argentina",
+    "Corea del Sur",
+    "Burkina Fasu",
+    "Haití",
+    "Francia",
+    "Portugal",
+    "Etiopía",
+    "Nueva Zelanda",
+    "Birmanía",
+    "Tailandia",
+    "Italia",
+    "Uruguay",
+    "Panamá",
+    "Cabo Verde",
+    "Tonga",
+    "Italia",
+    "República Centroafricana",
+    "España",
+    "Brasil",
+    "Estados Unidos",
+    "Bangladés",
+    "Venezuela",
+    "Bélgica",
+    "Estados Unidos",
+    "México",
+    "Papúa Nueva Guinea",
+    "Estados Unidos",
+    "Malí",
+    "España",
+    "Suecia",
+    "Laos",
+    "El Salvador",
+    "Irak",
+    "España",
+    "Italia",
+    "Polonia",
+    "Pakistal",
+    "Portugal",
+    "Perú",
+    "Madagascar",
+    "Italia",
+    "Japón",
+    "España",
+    "Portugal",
+    "Indonesia",
+    "Cuba",
+    "República Democrática del Congo",
+    "Luxemburgo",
+    "Guatemala",
+    "Italia",
+    "Marruecos",
+    "Canadá",
+    "Malta",
+    "Italia",
+    "Ruanda",
+    "Estados Unidos",
+    "Filipinas",
+    "Chile",
+    "Italia",
+    "Italia",
+    "Reino Unido",
+    "Corea del Sur",
+    "España",
+    "Francia",
+    "Nigeria",
+    "Brasil",
+    "India",
+    "Estados Unidos",
+    "Timor Oriental",
+    "Italia",
+    "India",
+    "Brasil",
+    "Ghana",
+    "Singapur",
+    "Paraguay",
+    "Mongolia"
+  )
+)
+
+```
+
+```{r}
+nuevoColegio$País <- NULL
+```
+JUNTANDO LA NUEVA COLUMNA PAIS LIMPIADA
+```{r}
+nuevoColegio <- cbind(nuevoColegio, Pais)
+```
+ORDENANDO LAS COLUMNAS ORIGINALMENTE
+```{r}
+nuevoColegio <- select(nuevoColegio, Nombre, Pais, Edad, Cargo)
+```
+
+GENERAR COLUMNA CONTINENETES
+```{r}
+nuevoColegio$Continente = c("EUROPA", "AFRICA", "EUROPA", "EUROPA", "AMERICA", "AMERICA", "AFRICA", "EUROPA", "EUROPA", "EUROPA", "AMERICA", "EUROPA", "EUROPA",
+                             "AMERICA", "AMERICA", "EUROPA", "EUROPA", "EUROPA", "EUROPA", "ASIA", "AMERICA", "AMERICA", "AMERICA", "AFRICA", "AFRICA", "AMERICA",
+                             "EUROPA", "EUROPA", "EUROPA", "EUROPA", "ASIA", "EUROPA", "EUROPA", "EUROPA", "AMERICA", "EUROPA", "EUROPA", "ASIA", "AMERICA", "EUROPA",
+                             "EUROPA", "EUROPA", "AMERICA", "EUROPA", "AMERICA", "ASIA", "AFRICA", "AMERICA", "ASIA", "EUROPA", "EUROPA", "EUROPA", "AMERICA", "AMERICA",
+                             "AFRICA", "AMERICA", "AMERICA", "ASIA", "AFRICA", "AMERICA", "EUROPA", "EUROPA", "AFRICA", "OCEANIA", "ASIA", "ASIA", "EUROPA", "AMERICA",
+                             "AMERICA", "AFRICA", "OCEANIA", "EUROPA", "AFRICA", "EUROPA", "AMERICA", "AMERICA", "ASIA", "AMERICA", "EUROPA", "AMERICA", "AMERICA",
+                             "OCEANIA", "AMERICA", "AFRICA", "EUROPA", "EUROPA", "ASIA", "AMERICA", "ASIA", "EUROPA", "EUROPA", "EUROPA", "ASIA", "EUROPA", "AMERICA",
+                             "AFRICA", "EUROPA", "ASIA", "EUROPA", "EUROPA", "ASIA", "AMERICA", "AFRICA", "EUROPA", "AMERICA", "EUROPA", "AFRICA", "AMERICA", "EUROPA",
+                             "EUROPA", "AFRICA", "AMERICA", "ASIA", "AMERICA", "EUROPA", "EUROPA", "EUROPA", "ASIA", "EUROPA", "EUROPA", "AFRICA", "AMERICA", "ASIA",
+                             "AMERICA", "ASIA", "EUROPA", "ASIA", "AMERICA", "AFRICA", "ASIA", "AMERICA", "ASIA")
+nuevoColegio
+```
+
+CODIFICACION DE PAIS
+```{r}
+nuevoColegio$Codificacion_PAIS = c("70", "834",
+                                   "40",
+                                   "380",
+                                   "340",
+                                   "604",
+                                   "288",
+                                   "191",
+                                   "250",
+                                   "348",
+                                   "124",
+                                   "250",
+                                   "724",
+                                   "840",
+                                   "32",
+                                   "380",
+                                   "616",
+                                   "250",
+                                   "380",
+                                   "356",
+                                   "484",
+                                   "840",
+                                   "76",
+                                   "404",
+                                   "324",
+                                   "840",
+                                   "756",
+                                   "380",
+                                   "380",
+                                   "616",
+                                   "144",
+                                   "276",
+                                   "380",
+                                   "380",
+                                   "76",
+                                   "380",
+                                   "380",
+                                   "356",
+                                   "124",
+                                   "65",
+                                   "528",
+                                   "380",
+                                   "840",
+                                   "276",
+                                   "840",
+                                   "356",
+                                   "566",
+                                   "170",
+                                   "608",
+                                   "380",
+                                   "276",
+                                   "826",
+                                   "558",
+                                   "124",
+                                   "284",
+                                   "76",
+                                   "32",
+                                   "410",
+                                   "854",
+                                   "332",
+                                   "250",
+                                   "620",
+                                   "231",
+                                   "554",
+                                   "104",
+                                   "764",
+                                   "380",
+                                   "858",
+                                   "591",
+                                   "132",
+                                   "776",
+                                   "380",
+                                   "140",
+                                   "724",
+                                   "76",
+                                   "840",
+                                   "50",
+                                   "862",
+                                   "56",
+                                   "840",
+                                   "484",
+                                   "598",
+                                   "840",
+                                   "466",
+                                   "724",
+                                   "752",
+                                   "418",
+                                   "222",
+                                   "368",
+                                   "724",
+                                   "380",
+                                   "616",
+                                   "586",
+                                   "620",
+                                   "604",
+                                   "450",
+                                   "380",
+                                   "392",
+                                   "724",
+                                   "620",
+                                   "360",
+                                   "192",
+                                   "180",
+                                   "442",
+                                   "320",
+                                   "380",
+                                   "504",
+                                   "124",
+                                   "470",
+                                   "380",
+                                   "646",
+                                   "840",
+                                   "608",
+                                   "152",
+                                   "380",
+                                   "380",
+                                   "826",
+                                   "410",
+                                   "724",
+                                   "250",
+                                   "566",
+                                   "76",
+                                   "356",
+                                   "840",
+                                   "626",
+                                   "380",
+                                   "356",
+                                   "76",
+                                   "288",
+                                   "702",
+                                   "600",
+                                   "496"
+)
+```
+
+CODIFICACIÓN DE CONTINENTES
+```{r}
+nuevoColegio$Codificacion_CONTINENTE = c("4", "1", "4", "4", "2", "2", "1", "4", "4", "4", "2", "4", "4", "2",
+                                         "2",
+                                         "4",
+                                         "4",
+                                         "4",
+                                         "4",
+                                         "3",
+                                         "2",
+                                         "2",
+                                         "2",
+                                         "1",
+                                         "1",
+                                         "2",
+                                         "4",
+                                         "4",
+                                         "4",
+                                         "4",
+                                         "3",
+                                         "4",
+                                         "4",
+                                         "4",
+                                         "2",
+                                         "4",
+                                         "4",
+                                         "3",
+                                         "2",
+                                         "4",
+                                         "4",
+                                         "4",
+                                         "2",
+                                         "4",
+                                         "2",
+                                         "3",
+                                         "1",
+                                         "2",
+                                         "3",
+                                         "4",
+                                         "4",
+                                         "4",
+                                         "2",
+                                         "2",
+                                         "1",
+                                         "2",
+                                         "2",
+                                         "3",
+                                         "1",
+                                         "2",
+                                         "4",
+                                         "4",
+                                         "1",
+                                         "5",
+                                         "3",
+                                         "3",
+                                         "4",
+                                         "2",
+                                         "2",
+                                         "1",
+                                         "5",
+                                         "4",
+                                         "1",
+                                         "4",
+                                         "2",
+                                         "2",
+                                         "3",
+                                         "2",
+                                         "4",
+                                         "2",
+                                         "2",
+                                         "5",
+                                         "2",
+                                         "1",
+                                         "4",
+                                         "4",
+                                         "3",
+                                         "2",
+                                         "3",
+                                         "4",
+                                         "4",
+                                         "4",
+                                         "3",
+                                         "4",
+                                         "2",
+                                         "1",
+                                         "4",
+                                         "3",
+                                         "4",
+                                         "4",
+                                         "3",
+                                         "2",
+                                         "1",
+                                         "4",
+                                         "2",
+                                         "4",
+                                         "1",
+                                         "2",
+                                         "4",
+                                         "4",
+                                         "1",
+                                         "2",
+                                         "3",
+                                         "2",
+                                         "4",
+                                         "4",
+                                         "4",
+                                         "3",
+                                         "4",
+                                         "4",
+                                         "1",
+                                         "2",
+                                         "3",
+                                         "2",
+                                         "3",
+                                         "4",
+                                         "3",
+                                         "2",
+                                         "1",
+                                         "3",
+                                         "2",
+                                         "3"
+)
+```
+ORDENANDO COLUMNAS
+```{r}
+nuevoColegio <- select(nuevoColegio, Nombre, Codificacion_PAIS, Pais, Continente,Codificacion_CONTINENTE, Edad, Cargo)
+nuevoColegio
+```

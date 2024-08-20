@@ -1,0 +1,135 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+#parametros<-read.csv("parametros.csv", header=TRUE)
+library("ggplot2")
+library("dplyr")
+library("factoextra")
+library("lubridate")
+library("stringr")
+library("tidyr")
+library("trapezoid")
+```
+
+```{r}
+A1<-((1)/(1+exp((0.3*(27-50)))))
+A2<-((1)/(1+exp((-0.3*(27-50)))))
+B1<-exp(-((1)/(2))*(((64-25)/(20)))^(2))
+B2<-exp(-((1)/(2))*(((64-75)/(20)))^(2))
+A1
+A2
+B1
+B2
+```
+
+```{r}
+View(parametros)
+str(parametros)
+summary(parametros)
+```
+
+```{r}
+#Función de membesia
+humedad<-parametros[(parametros$HUMEDAD<=64),]
+hist(humedad$TEMPERATURA)
+```
+
+```{r}
+humedadmax<-parametros[(parametros$HUMEDAD==64),]
+humedadmin<-parametros[(parametros$HUMEDAD==62),]
+humedadprom<-parametros[(parametros$HUMEDAD==63),]
+temperaturaMax<-parametros[(parametros$TEMPERATURA==27),]
+temperaturaAlta<-parametros[(parametros$TEMPERATURA==26),]
+temperaturaMedia<-parametros[(parametros$TEMPERATURA==25),]
+temperaturaMinima<-parametros[(parametros$TEMPERATURA==24),]
+```
+
+```{r}
+var<-mean(temperaturaMax$TEMPERATURA)
+if(27<=var){
+ i1<-c("Mucho Calor")
+  print(i1)
+}
+var1<-mean(temperaturaAlta$TEMPERATURA)
+if(26<=var1){
+ i2<-c("Hace calor")
+  print(i2)
+}
+var2<-mean(temperaturaMedia$TEMPERATURA)
+if(25<=var2){
+ i3<-c("Clima estable")
+  print(i3)
+}
+var3<-mean(temperaturaMinima$TEMPERATURA)
+if(24<=var3){
+ i4<-c("Está fresco")
+  print(i4)
+}
+var4<-mean(humedadmax$HUMEDAD)
+if(64<=var3){
+ i5<-c("La tierra esta mojada")
+  print(i5)
+}
+var5<-mean(humedadmin$HUMEDAD)
+if(63<=var3){
+ i6<-c("La tierra esta humeda")
+  print(i6)
+}
+var6<-mean(humedadprom$HUMEDAD)
+if(62<=var3){
+ i7<-c("La tierra es estable")
+  print(i7)
+}
+```
+
+```{r}
+curve(dtrapezoid(x, min = 0, mode1 = 97/400, mode2 = 97/400, max = 1,
+      n1 = 2, n3 = 2, alpha = 1), from = 0, to = 1)
+curve(dtrapezoid(x, min = 0, mode1 = 99/400, mode2 = 99/400, max = 1,
+      n1 = 2, n3 = 2, alpha = 1), from = 0, to = 1)
+curve(dtrapezoid(x, min = 0, mode1 = 103/400, mode2 = 103/400, max = 1,
+      n1 = 2, n3 = 2, alpha = 1), from = 0, to = 1)
+curve(dtrapezoid(x, min = 0, mode1 = 107/400, mode2 = 107/400, max = 1,
+      n1 = 2, n3 = 2, alpha = 1), from = 0, to = 1)
+curve(dtrapezoid(x, min = 0, mode1 = A1, mode2 = B1, max = 1,
+      n1 = 2, n3 = 2, alpha = 1), from = 0, to = 1)
+```
+
+```{r}
+#Reglas de inferencia
+if(var >= A1 && var >= B1){
+  P<-c("Va a llover")
+  print(P)
+}
+if(var1 >= A1 && var5 >= B1){
+  P<-c("Estará nublado")
+  print(P)
+}
+if(var2 >=  A1 && var5 >= B1){
+  P<-c("Despejador")
+  print(P)
+}
+if(var3 >=  A1 && var6 <= B1){
+  P<-c("Clima sin lluvias y con ambiente fresco")
+  print(P)
+}else{
+  print("Clima con lluvia")
+}
+```
+
+```{r}
+#Example
+curve(dtrapezoid(x, min = 0, mode1 = 47/1000, mode2 = 441/500, max = 1,
+      n1 = 2, n3 = 2, alpha = 1), from = 0, to = 1)
+```
+```{r}
+if(var3 >=  A1 && var6 <= B1){
+  P<-c("Clima sin lluvias y con ambiente fresco")
+  print(P)
+}else{
+  print("Clima con lluvia")
+}
+```
+

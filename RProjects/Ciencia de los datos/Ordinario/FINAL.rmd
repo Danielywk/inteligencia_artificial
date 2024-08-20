@@ -1,0 +1,151 @@
+---
+title: "R Notebook"
+author: ISAIAS AMADO CARREÑO
+date: 07/12/22
+output: html_notebook
+---
+
+
+# ESTABLECIENDO EL WORKSPACE
+The code chunk appears:
+```{r}
+setwd("/Users/isa/IdeaProjects/RProjects/Ciencia de los datos/Ordinario")
+```
+
+# LIBRERIAS
+```{r}
+library(dplyr)
+library(tidyverse)
+library(lubridate)
+library(zoo)
+library(scales)
+library(ggplot2)
+library(rvest)
+library(tidyr)
+library(stringr)
+library(forcats)
+```
+
+# CARGA DE LA DATA
+```{r}
+datos <- read.csv("movie_metadata.csv", header = TRUE)
+```
+
+# CURANDO LA DATA
+```{r}
+movies <- movies[!is.na(movies$title_year),]
+movies <- movies[!is.na(movies$budget),]
+movies <- movies[!is.na(movies$imdb_score),]
+
+```
+
+```{r}
+delete.na <- function(df, n=0) {
+  df[rowSums(is.na(df)) <= n,]
+}
+delete.na(movies)
+movies <- na.omit(movies)
+```
+
+# COSTO REPRESENTATIVO DE LAS PELÍCULAS EN LOS PRIMEROS 10 AÑOS DEL SIGLO XXI
+```{r}
+diez<-movies[(movies$title_year>=2001)&(movies$title_year<=2010),]
+mean(diez$budget)
+summary(diez$budget)
+```
+
+# VALOR REPRESENTATIVO DEL COSTO DE LAS PRODUCCIONES DE CANADA EN EL 2007
+```{r}
+canada<-movies[(movies$country=="Canada"),]
+canada<-canada[(canada$title_year==2007),]
+#mean(canada$budget)
+summary(canada$budget)
+```
+
+# VALOR REPRESENTATIVO DEL COSTO DE LAS PRODUCCIONES DE ESTADOS UNIDOS EN EL 2010
+```{r}
+usa<-movies[(movies$country=="USA"),]
+usa<-usa[(usa$title_year==2010),]
+#mean(canada$budget)
+summary(usa$budget)
+```
+
+# VALOR REPRESENTATIVO DEL COSTO DE LAS PRODUCCIONES DE CLASIFICACIÓN R
+```{r}
+clasificacionR<-movies[(movies$content_rating=="R"),]
+summary(clasificacionR$budget)
+mean(clasificacionR$budget)
+```
+
+# IMPACTO DE PANDEMIA DE H1N1 EN EL COSTO DE PRODUCCIONES CINEMATOGRÁFICAS
+# Y SU CALIDAD DE ACUERDO CON EL ÍNDICE DE IMDb
+
+```{r}
+# summary(movies$budget)
+costoT<-mean(movies$budget)
+summary(movies$budget)
+```
+
+```{r}
+pandemia <- movies[(movies$title_year>=2009)&(movies$title_year<=2010),]
+porcentajeIMDB<-mean(pandemia$imdb_score)
+porcentajeIMDB
+#pandemia <- select(pandemia, title_year, imdb_score)
+```
+
+```{r}
+costoT * porcentajeIMDB
+```
+
+# REGRESIÓN LINEAL QUE PROYECTA EL ÉXITO DE UNA PELÍCULA (CRITICA) EN FUNCIÓN DEL PRESUPUESTO
+
+
+```{r}
+model <- lm(movies$budget~movies$num_critic_for_reviews)
+summary(model)
+```
+
+```{r}
+ggplot (movies, aes (budget, num_critic_for_reviews,group=1)) +
+        scale_y_continuous("INDICES") +
+        geom_point (size= 2, colour= "red") +
+        # geom_line(size= .5, color = "blue") +
+        geom_smooth(method='lm', formula=y~x, se=FALSE) +
+        theme_bw() +
+        labs(title = "REGRESIÓN LINEAL",
+             subtitle = "PELÍCULAS") +
+        theme(legend.position = "top")
+```
+
+
+# CLÚSTER POR K MEDIAS QUE AGRUPE A DIRECTORES EN TÉRMINOS DE LA PUNTUACIÓN DE SUS PELÍCULAS Y DURACIÓN
+```{r}
+DF<-select(movies, director_name, imdb_score, budget)
+DF <- DF[!is.na(DF$budget),]
+DF <- DF[!is.na(DF$imdb_score),]
+DF <- DF[!is.na(DF$director_name),]
+head(DF)
+
+director.scale <- as.data.frame(scale(DF[,2:3]))
+
+set.seed(80)#semilla
+director.km <- kmeans(director.scale, centers = 5) #Realizamos clustering
+names(director.km)
+head(director.km$cluster)
+director.km$totss
+director.km$withinss
+director.km$tot.withinss
+
+### buscar el numero optimo de clusters
+sumbt<-kmeans(director.scale, centers = 1)$betweenss
+    for(i in 2:10) sumbt[i] <- kmeans(director.scale, centers = i)$betweenss
+plot(1:10, sumbt, type = "b", xlab = "número de clusters", ylab = "suma de cuadrados ínter grupos")
+plot(DF$budget,DF$imdb_score, col=director.km$cluster ,xlab = "presupuesto", ylab = "exito en critica" )
+
+# Exito en producciones de Nolan base en presupuesto
+DFc<-DF %>% filter(director_name == "Sam Mendes")
+plot(DFc$budget,DFc$imdb_score, col=director.km$cluster ,xlab = "presupuesto", ylab = "exito en critica" )
+
+# Exito en producciones de Con base en presupuesto
+aggregate(DF[,2:3] ,by = list(director.km$cluster), mean)
+```

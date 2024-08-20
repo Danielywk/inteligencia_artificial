@@ -1,0 +1,4 @@
+"0","data1 <- read.csv(""resultadosDataFInal.csv"", header = TRUE)"
+"0","data2 <- read.csv(""resultadosDataEditadoFInal.csv"", header = TRUE)"
+"0","data3 <- read.csv(""palabras_frecuentesDataEditadoFInal.csv"", header = TRUE)"
+"0","data4 <- read.csv(""palabras_frecuentesDataFInal.csv"", header = TRUE)"

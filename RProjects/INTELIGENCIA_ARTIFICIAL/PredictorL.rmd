@@ -1,0 +1,190 @@
+---
+title: "Predictor de lluvia"
+author: Isaias Amado Carreño
+date: 06/09/21
+output: html_notebook
+---
+
+The code chunk appears:
+```{r}
+parametros<-read.csv("parametros.csv", header=TRUE)
+View(parametros)
+```
+
+Type any R code in the chunk, for example:
+```{r}
+h1<-parametros[(parametros$HUMEDAD==64),]
+var<-mean(h1$HUMEDAD)
+humedad1<-var/100
+hm<-parametros[(parametros$HUMEDAD==62),]
+var1<-mean(hm$HUMEDAD)
+humedadmin<-var1/100
+t1<-parametros[(parametros$TEMPERATURA==27),]
+var2<-mean(t1$TEMPERATURA)
+temperatura1<-var2/100
+tm<-parametros[(parametros$TEMPERATURA==25),]
+var3<-mean(tm$TEMPERATURA)
+temperaturaMedia<-var3/100
+tb<-parametros[(parametros$TEMPERATURA==24),]
+var4<-mean(tb$TEMPERATURA)
+temperaturaBaja<-var4/100
+humedad1
+humedadmin
+temperatura1
+temperaturaMedia
+temperaturaBaja
+```
+
+```{r}
+
+```
+
+Funciones de Membresia
+```{r}
+a<-0.3
+b<-0.4
+c<-0.5
+d<-0.7
+
+p1<-(humedad1-a)/(b-a)
+p2<-(d-humedad1)/(d-c)
+p3<-min(p1,1,p2)
+
+mediah<-max(p3,0)
+
+tam<-1000
+x<-seq(0,1,length.out=tam)
+
+a<-0.0
+b<-0.2
+c<-0.6
+
+p1<-(humedad1-a)/(b-a)
+p2<-(c-humedad1)/(c-b)
+p3<-min(p1,p2)
+
+ph<-max(p3,0)
+
+
+a<-0.6
+b<-0.7
+c<-0.8
+
+p1<-(humedad1-a)/(b-a)
+p2<-(c-humedad1)/(c-b)
+p3<-min(p1,p2)
+
+altah<-max(p3,0)
+
+humedad1
+altah
+mediah
+ph
+```
+
+
+```{r}
+a<-0.2
+b<-0.4
+c<-0.5
+d<-1
+
+p1<-(temperatura1-a)/(b-a)
+p2<-(d-temperatura1)/(d-c)
+p3<-min(p1,1,p2)
+
+mediat<-max(p3,0)
+
+a<-0.0
+b<-0.2
+c<-0.4
+
+p1<-(temperatura1-a)/(b-a)
+p2<-(c-temperatura1)/(c-b)
+
+p3<-min(p1,p2)
+
+bajat<-max(p3,0)
+
+a<-0.6
+b<-0.7
+c<-0.8
+
+p1<-(temperatura1-a)/(b-a)
+p2<-(c-temperatura1)/(c-b)
+
+p3<-min(p1,p2)
+
+altat<-max(p3,0)
+
+temperatura1
+bajat
+mediat
+altat
+```
+
+
+```{r}
+ppb<-max(min(ph,bajat),min(mediah,bajat),min(ph,mediat))
+
+ppm<- max(min(altah,bajat),min(mediah,mediat),min(ph,altat))
+
+ppa<-max(min(altah,mediat),min(mediah,altat),min(altah,altat))
+ppb
+ppm
+ppa
+```
+
+
+```{r}
+#Example
+curve(dtrapezoid(x, min = 0, mode1 = 3/10, mode2 = 3/10, max = 1,
+                 n1 = 2, n3 = 2, alpha = 1), from = 0, to = 1)
+
+curve(dtrapezoid(x, min = 0, mode1 = 2/5, mode2 = 2/5, max = 1,
+                 n1 = 2, n3 = 2, alpha = 1), from = 0, to = 1)
+
+curve(dtrapezoid(x, min = 0, mode1 = 7/20, mode2 = 7/20, max = 1,
+                 n1 = 2, n3 = 2, alpha = 1), from = 0, to = 1)
+```
+
+
+Reglas de inferencia
+```{r}
+#Matemática
+A1<-((1)/(1+exp((0.3*(27-50)))))
+A2<-((1)/(1+exp((-0.3*(27-50)))))
+B1<-exp(-((1)/(2))*(((64-25)/(20)))^(2))
+B2<-exp(-((1)/(2))*(((64-75)/(20)))^(2))
+A1
+A2
+B1
+B2
+print("-----------------------------")
+#Difuso
+ppb<-max(min(ph,bajat),min(mediah,bajat),min(ph,mediat))
+
+ppm<- max(min(altah,bajat),min(mediah,mediat),min(ph,altat))
+
+ppa<-max(min(altah,mediat),min(mediah,altat),min(altah,altat))
+ppb
+ppm
+ppa
+```
+
+```{r}
+if(ppb <= 0.3){
+  P<-c("No habrá lluvia")
+  print(P)
+}
+if(ppm >= 0.31 && ppm <= 0.6){
+  P<-c("Posiblemente si habrá lluvia")
+  print(P)
+}
+if(ppa >= 0.61 && ppa <= 0.1){
+  P<-c("Si habrá lluvia")
+  print(P)
+}else{
+        print("Definitivamente no va a haber lluvia")
+}
+```

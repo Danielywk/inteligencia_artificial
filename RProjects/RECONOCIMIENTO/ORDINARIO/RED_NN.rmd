@@ -1,0 +1,341 @@
+---
+title: "RED NEURONAL"
+output: html_notebook
+author: Amado Carreno Isaias, Celestino Segundo Ricardo, Rocha Ruiz Dafne Arleth, Urbano Plata Jeremy
+---
+
+# LIBRERIAS
+```{r}
+library(rvest)
+library(tidyr)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(forcats)
+library(nleqslv)
+```
+```{r}
+
+```
+
+# PARTE 1: PREPROCESAMIENTO DE LOS DATOS
+
+# ESTABLECIENDO DIRECTORIO
+```{r}
+setwd("/Users/isa/IdeaProjects/RProjects/RECONOCIMIENTO/ORDINARIO/")
+```
+
+# ABRIENDO DATASET
+```{r}
+ds <- read.csv("movie_metadata.csv", header = TRUE)
+df <- read.csv("movie_metadata.csv", header = TRUE)
+```
+
+
+# VISUALIZACION DE LA DATA
+```{r}
+str(ds)
+nombres_columnas <- colnames(ds)
+nombres_columnas
+```
+
+# PREPROCESAMIENTO DE LOS DATOS
+# IMPUTACIONES CON LIBRERIAS
+```{r}
+
+
+
+```
+
+
+# ORDENANDO LA DATA
+```{r}
+movies <- arrange(ds, title_year)
+movies_copy <- arrange(ds, title_year)
+```
+
+
+# ELIMINAR NA´s DE FECHAS DEBIDO A QUE NO SE PUEDEN IMPUTAR
+```{r}
+movies <- movies[!is.na(movies$title_year),]
+```
+
+# IMPUTACIÓN DEL PRESUPUESTO (BUDGET)
+# CALCULANDO MEDIA POR AÑO
+```{r}
+media_por_anio <- movies %>%
+  group_by(title_year) %>%
+  summarise(media_presupuesto = mean(budget, na.rm = TRUE))
+media_por_anio
+```
+
+# IMPUTACIÓN DE VALORES FALTANTES EN FUNCIÓN DEL AÑO
+```{r}
+movies <- movies %>%
+  left_join(media_por_anio, by = "title_year") %>%
+  mutate(budget = ifelse(is.na(budget), media_presupuesto, budget)) %>%
+  select(-media_presupuesto)
+
+```
+
+# ENCONTRANDO VALORES FALTANTES EN IMDb
+```{r}
+indices_na <- which(is.na(movies$imdb_score))
+print(indices_na)
+
+```
+
+
+# ENCONTRANDO VALORES FALTANTES EN GROSS (INGRESOS EN TAQUILLA)
+```{r}
+indices_na <- which(is.na(movies$gross))
+print(indices_na)
+```
+
+
+# REEMPLAZANDO NAN POR NA
+```{r}
+movies$gross <- replace(movies$gross, movies$gross == "NaN", NA)
+```
+
+# ENCONTRANDO VALORES FALTANTES EN EL NÚMERO DE VOTOS POR USUARIO
+```{r}
+indices_na <- which(is.na(movies$num_voted_users))
+print(indices_na)
+```
+
+
+# IMPUTANDO LAS GANANCIAS EN BASE AL GÉNERO
+```{r}
+media_por_genero <- movies %>%
+  group_by(genres) %>%
+  summarise(media_ingresos = median(gross, na.rm = TRUE))
+media_por_genero
+```
+
+
+# IMPUTANDO VALORES NA POR MEDIANA
+```{r}
+mediana <- median(media_por_genero$media_ingresos, na.rm = TRUE)
+
+# Reemplazar los valores faltantes por la mediana
+media_por_genero$media_ingresos <- ifelse(is.na(media_por_genero$media_ingresos), mediana, media_por_genero$media_ingresos)
+media_por_genero
+
+```
+
+
+# REEMPLAZANDO LAS IMPUTACIONES EN EL DATASET DE MOVIES
+```{r}
+movies <- movies %>%
+  left_join(media_por_genero, by = "genres") %>%
+  mutate(gross = ifelse(is.na(gross), media_ingresos, gross)) %>%
+  select(-media_ingresos)
+```
+
+
+# VERIFICANDO VALORES FALTANTES EN GROSS (INGRESOS EN TAQUILLA)
+```{r}
+indices_na <- which(is.na(movies$gross))
+print(indices_na)
+```
+
+# PARTE 2: MODELO DIFUSO
+
+# DEFINIR FUNCIÓN DE MEMBRESIA TIPO GAUSSIANA
+```{r}
+gaussian <- function(x, sigma, c) {
+  return(exp(-(x - c)^2 / (2 * sigma^2)))
+}
+
+```
+
+# DESARROLLO
+# FUNCIONES DE INFERENCIA
+```{r}
+# Definir variables de entrada y salida
+imdb <- seq(0, 100, length.out = 100)
+ingresos <- seq(0, 100, length.out = 100)
+votacion <- seq(0, 100, length.out = 100)
+exito <- seq(0, 30, length.out = 100)
+
+# Definir parámetros de las funciones de membresía
+c <- c(10, 30, 50, 70, 90)
+sigma <- rep(10, 5)
+
+# Calcular grados de membresía para las variables de entrada
+grado_imdb_bajo <- gaussian(imdb, sigma[1], c[1])
+grado_imdb_medio <- gaussian(imdb, sigma[2], c[2])
+grado_imdb_alto <- gaussian(imdb, sigma[3], c[3])
+
+grado_ingresos_bajos <- gaussian(ingresos, sigma[1], c[1])
+grado_ingresos_medios <- gaussian(ingresos, sigma[2], c[2])
+grado_ingresos_altos <- gaussian(ingresos, sigma[3], c[3])
+
+grado_votacion_bajo <- gaussian(votacion, sigma[1], c[1])
+grado_votacion_medio <- gaussian(votacion, sigma[2], c[2])
+grado_votacion_alto <- gaussian(votacion, sigma[3], c[3])
+
+```
+
+# REGLAS DE INFERENCIA
+```{r}
+# Realizar inferencia difusa y calcular el grado de membresía de la salida
+grado_exito_bajo <- pmin(grado_imdb_medio, pmin(grado_ingresos_medios, grado_votacion_alto))
+grado_exito_medio <- pmin(grado_imdb_alto, pmin(grado_ingresos_medios, grado_votacion_bajo))
+grado_exito_alto <- pmin(grado_imdb_alto, pmin(grado_ingresos_altos, grado_votacion_medio))
+grado_exito_muy_alto <- pmin(grado_imdb_alto, pmin(grado_ingresos_altos, grado_votacion_medio))
+```
+
+# EXITO
+```{r}
+# Visualizar resultados
+plot(exito, grado_exito_bajo, type = 'l', col = 'blue', xlab = 'Tasa de éxito', ylab = 'Grado de membresía', main = 'Inferencia difusa')
+lines(exito, grado_exito_medio, col = 'red')
+lines(exito, grado_exito_alto, col = 'green')
+lines(exito, grado_exito_muy_alto, col = 'purple')
+legend('topright', c('Exito bajo', 'Exito medio', 'Exito alto', 'Exito muy alto'), col = c('blue', 'red', 'green', 'purple'), lty = 1)
+
+```
+
+# IMDB
+```{r}
+# Visualizar resultados
+plot(imdb, grado_imdb_bajo, type = 'l', col = 'blue', xlab = 'Tasa de IMDB', ylab = 'Grado de membresía', main = 'Inferencia difusa')
+lines(imdb, grado_imdb_medio, col = 'red')
+lines(imdb, grado_imdb_alto, col = 'green')
+legend('topright', c('Imdb malo', 'Imdb regular', 'Imdb buena'), col = c('blue', 'red', 'green'), lty = 1)
+```
+
+# INGRESOS
+```{r}
+# Visualizar resultados
+plot(ingresos, grado_ingresos_bajos, type = 'l', col = 'blue', xlab = 'Tasa de ingresos', ylab = 'Grado de membresía', main = 'Inferencia difusa')
+lines(ingresos, grado_ingresos_medios, col = 'red')
+lines(ingresos, grado_ingresos_altos, col = 'green')
+legend('topright', c('Ingresos bajos', 'Ingresos medios', 'Ingresos altos'), col = c('blue', 'red', 'green'), lty = 1)
+```
+
+# VOTACION POR USUARIOS
+```{r}
+plot(votacion, grado_votacion_bajo, type = 'l', col = 'blue', xlab = 'Tasa por votación', ylab = 'Grado de membresía', main = 'Inferencia difusa')
+lines(votacion, grado_votacion_medio, col = 'red')
+lines(votacion, grado_votacion_alto, col = 'green')
+legend('topright', c('Votaciones bajas', 'Votaciones medias', 'Votaciones altas'), col = c('blue', 'red', 'green'), lty = 1)
+```
+
+
+# FUNCIONES DE MEMBRESIA O PERTENENCIA
+```{r}
+# POSIBLE RESULTADO
+
+# Definición de conjuntos difusos
+imdb_score <- c("bajo", "mediano", "alto")
+ingresos <- c("bajos", "medianos", "altos")
+
+# Función para calcular el grado de activación de una regla difusa
+imdb_bajo <- function(x) {
+  ifelse(x <= 3, 1, ifelse(x <= 5, (5 - x) / 2, 0))
+}
+
+imdb_mediano <- function(x) {
+  ifelse(x <= 3 | x >= 7, 0, ifelse(x <= 5, (x - 3) / 2, (7 - x) / 2))
+}
+
+imdb_alto <- function(x) {
+  ifelse(x <= 5, 0, ifelse(x <= 7, (x - 5) / 2, 1))
+}
+
+# Funciones de pertenencia para los ingresos
+ingresos_bajos <- function(x) {
+  ifelse(x <= 1000000, 1, ifelse(x <= 3000000, (3000000 - x) / 2000000, 0))
+}
+
+ingresos_medianos <- function(x) {
+  ifelse(x <= 1000000 | x >= 5000000, 0, ifelse(x <= 3000000, (x - 1000000) / 2000000, (5000000 - x) / 2000000))
+}
+
+ingresos_altos <- function(x) {
+  ifelse(x <= 3000000, 0, ifelse(x <= 5000000, (x - 3000000) / 2000000, 1))
+}
+```
+
+
+# FUNCIÓN DE ACTIVACIÓN
+# VALIDACIÓN
+```{r}
+activacion <- function(imdb_valor, ingresos_valor) {
+  min(imdb_valor, ingresos_valor)
+}
+
+# Función para calcular el grado de éxito de la película
+grado_exito <- function(imdb_valor, ingresos_valor) {
+  # Reglas difusas (ejemplo)
+  regla1 <- activacion(imdb_bajo(imdb_valor), ingresos_bajos(ingresos_valor))
+  regla2 <- activacion(imdb_mediano(imdb_valor), ingresos_medianos(ingresos_valor))
+  regla3 <- activacion(imdb_alto(imdb_valor), ingresos_altos(ingresos_valor))
+
+  # Agregación utilizando máximo
+  max(regla1, regla2, regla3)
+}
+
+```
+
+# ENTRENAMIENTO (VARIABLES DE ENTRADA)
+```{r}
+# Ejemplo de uso
+imdb_valor <- 5.7
+ingresos_valor <- 6500000
+
+exito <- grado_exito(imdb_valor, ingresos_valor)
+
+exito <- exito * 100
+print(exito)
+```
+
+# DEFUSIFICACIÓN (SALIDA)
+```{r}
+if (exito <= 30) {
+  P <- c("El grado de éxito por IMDB e ingresos es bajo")
+  print(P)
+}
+if (exito >= 31 && exito <= 60) {
+  P <- c("El grado de éxito por IMDB e ingresos es medio")
+  print(P)
+}
+if (exito >= 61 && exito <= 100) {
+  P <- c("El grado de éxito por IMDB e ingresos es alto")
+  print(P)
+}
+```
+
+
+# PARTE 3: REDES NEURONALES
+```{r}
+
+```
+
+#
+```{r}
+
+```
+
+#
+```{r}
+
+```
+
+#
+```{r}
+
+```
+
+#
+```{r}
+
+```
+
+#
+```{r}
+
+```

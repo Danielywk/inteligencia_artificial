@@ -1,0 +1,226 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Checar directorio de trabjo
+
+```{r}
+getwd()
+```
+
+```{r}
+
+setwd("/Users/softcomputing/Ciencia_de_los_datos")
+```
+
+```{r}
+conclaves<-read.csv("Conclaves.csv")
+```
+
+
+```{r}
+head(conclaves)
+```
+
+```{r}
+str(conclaves)
+```
+
+Conclave	Estadístico
+1903	    conclave1
+1914	    conclave2
+1922	    conclave3
+1939	    conclave4
+1958	    conclave5
+1963	    conclave6
+1978	    conclave7
+1978	   conclave8
+2005	    conclave9
+2013	    conclave10
+
+```{r}
+conclave1<-conclaves[conclaves$A.O.DE.PARTICIPACION=="1903",]
+```
+
+```{r}
+View(conclave1)
+```
+```{r}
+View(conclave1)
+```
+
+```{r}
+# CLASIFICACIÓN
+conclave2<-conclaves[conclaves$A.O.DE.PARTICIPACION=="1914",]
+conclave3<-conclaves[conclaves$A.O.DE.PARTICIPACION=="1922",]
+conclave4<-conclaves[conclaves$A.O.DE.PARTICIPACION=="1939",]
+conclave5<-conclaves[conclaves$A.O.DE.PARTICIPACION=="1958",]
+conclave6<-conclaves[conclaves$A.O.DE.PARTICIPACION=="1963",]
+conclave7<-conclaves[conclaves$A.O.DE.PARTICIPACION=="1978" & conclaves$NOMBRE.DEL.CARDENAL!="John Joseph Wright",]
+conclave8<-conclaves[conclaves$A.O.DE.PARTICIPACION=="1978" & conclaves$NOMBRE.DEL.CARDENAL!="Albino Luciani",]
+conclave9<-conclaves[conclaves$A.O.DE.PARTICIPACION=="2005",]
+conclave10<-conclaves[conclaves$A.O.DE.PARTICIPACION=="2013",]
+```
+
+
+```{r}
+View(conclave8)
+```
+
+
+```{r}
+# RESUMEN DATOS
+summary(conclave1$EDAD.AL.PARTICIPAR)
+summary(conclave2$EDAD.AL.PARTICIPAR)
+summary(conclave3$EDAD.AL.PARTICIPAR)
+summary(conclave4$EDAD.AL.PARTICIPAR)
+summary(conclave5$EDAD.AL.PARTICIPAR)
+summary(conclave6$EDAD.AL.PARTICIPAR)
+summary(conclave7$EDAD.AL.PARTICIPAR)
+summary(conclave8$EDAD.AL.PARTICIPAR)
+summary(conclave9$EDAD.AL.PARTICIPAR)
+summary(conclave10$EDAD.AL.PARTICIPAR)
+```
+```{r}
+# OBYIENER DESVIACIÓN ESTÁNDAR
+sd(conclave1$EDAD.AL.PARTICIPAR)/mean(conclave1$EDAD.AL.PARTICIPAR)
+sd(conclave2$EDAD.AL.PARTICIPAR)/mean(conclave2$EDAD.AL.PARTICIPAR)
+sd(conclave3$EDAD.AL.PARTICIPAR)/mean(conclave3$EDAD.AL.PARTICIPAR)
+sd(conclave4$EDAD.AL.PARTICIPAR)/mean(conclave4$EDAD.AL.PARTICIPAR)
+sd(conclave5$EDAD.AL.PARTICIPAR)/mean(conclave5$EDAD.AL.PARTICIPAR)
+sd(conclave6$EDAD.AL.PARTICIPAR)/mean(conclave6$EDAD.AL.PARTICIPAR)
+sd(conclave7$EDAD.AL.PARTICIPAR)/mean(conclave7$EDAD.AL.PARTICIPAR)
+sd(conclave8$EDAD.AL.PARTICIPAR)/mean(conclave8$EDAD.AL.PARTICIPAR)
+sd(conclave9$EDAD.AL.PARTICIPAR)/mean(conclave9$EDAD.AL.PARTICIPAR)
+sd(conclave10$EDAD.AL.PARTICIPAR)/mean(conclave10$EDAD.AL.PARTICIPAR)
+```
+
+
+Pio X 68
+Benedicto XVI 56
+Pio XI 65
+Pio XII 63
+Juan XXIII 77
+Pablo VI 66
+Juan Pablo I 65
+Juan Pablo II 56
+Benedicto XVI 78
+Francisco 76
+
+
+
+mi_df <- data.frame(
+  "entero" = 1:4, 
+  "factor" = c("a", "b", "c", "d"), 
+  "numero" = c(1.2, 3.4, 4.5, 5.6),
+  "cadena" = as.character(c("a", "b", "c", "d"))
+)
+```{r}
+papas<-data.frame(
+  Nombre=c("PioX","BenedictoXV","PioXI", "PioXII","JuanXXIII","PabloVI","Juan PabloI","Juan PabloII","BenedictoXVI","Francisco"),
+  Edad=c(68,56,65,63,77,66,65,56,78,76))
+```
+
+```{r}
+head(papas)
+str(papas)
+mean(papas$Edad)
+sd(papas$Edad)/mean(papas$Edad)
+```
+
+```{r}
+help("barplot")
+```
+
+
+```{r}
+
+barplot(papas$Edad,names.arg = papas$Nombre,horiz = TRUE,las=1, xlim=c(0, 80))
+```
+
+orden<-reorder(papas$Nombre,papas$Edad,max)
+```{r}
+library(ggplot2)
+```
+
+library(ggplot2)
+# Basic barplot
+p<-ggplot(data=df, aes(x=dose, y=len)) +
+  geom_bar(stat="identity")
+p
+   
+# Horizontal bar plot
+p + coord_flip()
+x=reorder(Parcela,-Plantas)
+
+
+ggplot(data=df, aes(x=reorder(Parcela,-Plantas), y=Plantas, fill=Tratamiento)) 
+
+```{r}
+
+p<-ggplot(data=papas,aes(x=reorder(Nombre,-Edad),y=Edad)) + geom_bar(stat="identity",position="dodge")+theme(panel.grid = element_blank())
+p
+
+```
+
+
+
+```{r}
+p + coord_flip()+theme(panel.grid = element_blank())
+```
+
+
+```{r}
+p<-ggplot(data=papas,aes(x=reorder(Nombre,Edad),y=Edad)) + geom_bar(stat="identity",position="dodge")
+p
+```
+
+```{r}
+p<-p+coord_flip() +theme(panel.grid = element_blank())
+```
+
+```{r}
+p<-ggplot(data=papas,aes(x=reorder(Nombre,-Edad),y=Edad)) + geom_bar(stat="identity",position="dodge")
+p+coord_flip()
+p
+```
+```{r}
+p+theme(panel.background = element_rect(fill = 'white'))
+```
+
+```{r}
+
+PromedioConclave<-data.frame(
+  Reunion=c("Conclave1","Conclave2","Conclave3", "Conclave4","Conclave5","Conclave6","Conclave7","Conclave8","Conclave9","Conclave10"),
+  PEdad=c(mean(conclave1$EDAD.AL.PARTICIPAR),mean(conclave2$EDAD.AL.PARTICIPAR),mean(conclave3$EDAD.AL.PARTICIPAR),mean(conclave4$EDAD.AL.PARTICIPAR),mean(conclave5$EDAD.AL.PARTICIPAR),mean(conclave6$EDAD.AL.PARTICIPAR),mean(conclave7$EDAD.AL.PARTICIPAR),mean(conclave8$EDAD.AL.PARTICIPAR),mean(conclave9$EDAD.AL.PARTICIPAR),mean(conclave10$EDAD.AL.PARTICIPAR)))
+
+```
+
+```{r}
+p<-ggplot(data=PromedioConclave,aes(x=reorder(Reunion,-PEdad),y=PEdad)) + geom_bar(stat="identity",position="dodge")
+p+coord_flip()
+p
+```
+```{r}
+hist(conclave5$EDAD.AL.PARTICIPAR)
+```
+```{r}
+hist(conclaves$EDAD.AL.PARTICIPAR)
+```
+
+```{r}
+hist(conclave9$EDAD.AL.PARTICIPAR)
+```
+
+
+```{r}
+View(PromedioConclave)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+

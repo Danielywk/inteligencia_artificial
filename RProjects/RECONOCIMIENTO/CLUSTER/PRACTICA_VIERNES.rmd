@@ -1,0 +1,98 @@
+---
+title: "R Notebook"
+author: ISAIAS AMADO, DAFNE ARLETH
+date: 20/04/23
+output: html_notebook
+---
+
+# LIBRERIAS
+```{r}
+library(rvest)
+library(tidyr)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(forcats)
+library(DChaos)
+library(nleqslv)
+```
+
+# ESTABLECIENDO EL DIRECTORIO
+```{r}
+setwd("/Users/isa/IdeaProjects/RECONOCIMIENTO/CLUSTER")
+```
+
+
+# ABRIENDO DATAS
+```{r}
+sismosJ <- read.csv("sismos_japan.csv", header = TRUE)
+sismosM <- read.csv("sismos_mexico.csv", header = TRUE)
+```
+
+# VISUALIZANDO EL TIPO DE DATA
+```{r}
+str(sismosJ)
+str(sismosM)
+```
+
+
+
+
+
+
+# ELIGIENDO COLUMNAS: PROFUNDIDAD Y MAGNITUD
+```{r}
+sismos_mex <- sismosM %>%
+  select(depth, mag) %>%
+  mutate(pais = "Mexico")
+
+sismos_jap <- sismosJ %>%
+  select(depth, mag) %>%
+  mutate(pais = "Japon")
+```
+
+# COMBINANDO AMBOS DATASET EN UNO
+```{r}
+data_combined <- rbind(sismosJ, sismosM)
+```
+
+
+# CLUSTER PROFUNDIDAD Y MAGNITUD
+```{r}
+sismos_totales <- rbind(sismos_mex, sismos_jap)
+datos <- sismos_totales[, c("depth", "mag")]
+datos_norm <- scale(datos)
+cluster <- kmeans(datos_norm, 3)
+plot(datos, col = ifelse(sismos_totales$pais == "Mexico", "red", "blue"), pch = 16)
+```
+
+# NORMALIZANDO LAS NUEVAS DATAS
+```{r}
+lyapunov_data1 <- lyapunov(datos_norm)
+```
+
+
+# CLUSTER PROFUNDIDAD, MAGNITUD, LATITUD
+```{r}
+sismos_mex <- sismosM %>%
+  select(latitude, mag, depth) %>%
+  mutate(pais = "Mexico")
+
+sismos_jap <- sismosJ %>%
+  select(latitude, mag, depth) %>%
+  mutate(pais = "Japon")
+```
+
+
+```{r}
+sismos_totales <- rbind(sismos_mex, sismos_jap)
+datos <- sismos_totales[, c("latitude", "mag", "depth")]
+datos_norm <- scale(datos)
+cluster <- kmeans(datos_norm, 3)
+plot(datos, col = ifelse(sismos_totales$pais == "Mexico", "red", "blue"), pch = 16)
+```
+
+# COEFICIENTE DE CORRELACIÓN DE LYAPUNOV
+```{r}
+lyapunov_data2 <- lyapunov(datos_norm)
+```

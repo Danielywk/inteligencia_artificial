@@ -1,0 +1,58 @@
+---
+title: "R Notebook"
+author: isa
+date: 23/02/23
+output: html_notebook
+---
+
+
+```{r}
+datos$X.2 <- as.numeric(datos$X.2)
+datos$X1<- as.numeric(datos$X1)
+datos$X2 <- as.numeric(datos$X2)
+datos$X3 <- as.numeric(datos$X3)
+datos$X4 <- as.numeric(datos$X4)
+datos$X5 <- as.numeric(datos$X5)
+datos$X6 <- as.numeric(datos$X6)
+datos$X7 <- as.numeric(datos$X7)
+datos$X8 <- as.numeric(datos$X8)
+datos$X9 <- as.numeric(datos$X9)
+datos$X10 <- as.numeric(datos$X10)
+datos$X11<- as.numeric(datos$X11)
+datos$X12 <- as.numeric(datos$X12)
+datos$X13 <- as.numeric(datos$X13)
+datos$X14 <- as.numeric(datos$X14)
+datos$X15 <- as.numeric(datos$X15)
+datos$X16 <- as.numeric(datos$X16)
+datos$X17 <- as.numeric(datos$X17)
+datos$X18 <- as.numeric(datos$X18)
+datos$X19 <- as.numeric(datos$X19)
+datos$X20 <- as.numeric(datos$X20)
+datos$X21<- as.numeric(datos$X21)
+datos$X22 <- as.numeric(datos$X22)
+datos$X23 <- as.numeric(datos$X23)
+datos$X24 <- as.numeric(datos$X24)
+datos$X25 <- as.numeric(datos$X25)
+datos$X26 <- as.numeric(datos$X26)
+datos$X27 <- as.numeric(datos$X27)
+datos$X28 <- as.numeric(datos$X28)
+datos$X29 <- as.numeric(datos$X29)
+datos$X30 <- as.numeric(datos$X30)
+datos$X31<- as.numeric(datos$X31)
+datos$X32 <- as.numeric(datos$X32)
+datos$X33 <- as.numeric(datos$X33)
+datos$X34 <- as.numeric(datos$X34)
+datos$X35 <- as.numeric(datos$X35)
+```
+
+Type any R code in the chunk, for example:
+```{r}
+str(datos)
+```
+
+
+```{r}
+datos <-
+```
+Now, click the **Run** button on the chunk toolbar to [execute](https://www.jetbrains.com/help/pycharm/r-markdown.html#run-r-code) the chunk code. The result should be placed under the chunk.
+Click the **Knit and Open Document** to built and preview an output.

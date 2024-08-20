@@ -1,0 +1,24 @@
+---
+title: "R Notebook"
+author: isa
+date: 12/09/22
+output: html_notebook
+---
+
+
+LEYENDO LA DATA
+```{r}
+mascarilla <- read.csv("Data.csv", head = TRUE)
+head(mascarilla)
+```
+
+
+
+Type any R code in the chunk, for example:
+```{r}
+
+```
+
+```{r}
+
+```

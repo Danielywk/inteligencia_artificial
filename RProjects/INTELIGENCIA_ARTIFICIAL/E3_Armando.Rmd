@@ -1,0 +1,182 @@
+---
+title: "Tarea03"
+author: "José Armando"
+date: "2022-08-20"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+
+/Users/josea/Documents
+
+```{r}
+library(rvest)
+```
+```{r}
+library(ggplot2)
+```
+
+#1. Extraccioin de datos 
+```{r}
+webpage <- read_html("https://es.wikipedia.org/wiki/Anexo:Cardenales")
+```
+
+#2.	Realice en R un webscrapping sobre la lista de cardenales electores de dicha pagina
+```{r}
+tablas <- html_table(webpage) 
+class(tablas)
+tablas
+```
+
+
+```{r}
+  consistorio=(tablas[[2]])
+
+```
+
+```{r}
+View(consistorio)
+```
+
+```{r}
+consistorio1=(tablas[[1]])
+
+```
+
+```{r}
+View(consistorio1)
+```
+#3.	Realice un data set de cardenales electores
+#Se crea un nuevo dataset llamado webscrapping, en el dierectorio de documents
+```{r}
+write.csv(consistorio,"webscrapping.csv")
+```
+
+#Se crea un nuevo dataset llamado webscrapping1, en el dierectorio de descuments
+```{r}
+write.csv(consistorio1,"webscrapping1.csv")
+```
+
+#Especifica la ruta de trabajo
+```{r}
+getwd()
+```
+```{r}
+setwd("/Users/josea/Documents")
+```
+
+#Antes de leer los datasets guardados fue necesario hacer un tratamiento de datos, para poder trabajar con ellos, el tratamiento se realizo en los dos datsets, borrando la palabra años que estaba adelante del numero que representa la edad de los cardenales
+#Se modifico el apartado de Años en la variable Edad para poder hacer el Boxplot
+```{r}
+conclave <-read.csv("webscrapping.csv")
+```
+
+```{r}
+head(conclave)
+```
+```{r}
+View(conclave)
+```
+
+
+```{r}
+conclave1 <-read.csv("webscrapping1.csv")
+```
+
+```{r}
+head(conclave1)
+```
+#4.   Union de los dos datasets para hacer solo un Dataset
+```{r}
+dtcomp <- rbind(conclave,conclave1)
+```
+
+```{r}
+View(dtcomp)
+```
+
+#Se guarda el dataset en el directorio de documentos, como DatasetCompleto 
+```{r}
+write.csv(dtcomp,"DatasetCompleto.csv")
+```
+
+#Se indica el Dataset con el que se esta trabajando
+```{r}
+attach(dtcomp)
+```
+#5.  Se ejecuta el comando boxplot para ver los Outliers
+```{r}
+boxplot(Edad, main = "Boxplot de la variable Edad", xlab = "intervalos de edades", ylab = "Edad de los Cardinales", horizontal = T, col="Red")
+```
+
+#Se obtiene la lista de valores que aparecen como Outliers
+```{r}
+boxplot.stats(Edad)
+```
+
+#Eliminacion de outliers
+```{r}
+edad_out_rm <- Edad[!Edad %in% boxplot.stats(Edad)$out]
+```
+
+#Cantidad de Outliers eliminados
+```{r}
+length(Edad) - length(edad_out_rm)
+```
+#Boxplot sin Outliers
+```{r}
+boxplot(edad_out_rm, main = "Boxplot de la variable Edad", xlab = "intervalos de edades", ylab = "Edad de los Cardinales", horizontal = T, col="Green")
+```
+#Se va a trabajar con el datased de los cardinales electores
+```{r}
+attach(conclave)
+```
+
+#Se realiza un boxplot para determinar cuantos outliers hay en los cardelanes electores
+```{r}
+boxplot(Edad, main = "Boxplot de la variable Edad", xlab = "intervalos de edades", ylab = "Edad de los Cardinales", horizontal = T, col="Blue" )
+```
+#Se obtiene la lista de valores que aparecen como Outliers
+```{r}
+boxplot.stats(Edad)
+```
+#6.  Grafica de barras de distribucion de edades de los cardenales electores
+#Para esta parte fue nesesario eliminar los outliers y crear un nuevo datsed 
+```{r}
+limpio <-read.csv("tratamiento.csv")
+```
+
+#Se trabaja sin outiliers
+```{r}
+attach(limpio)
+```
+#Grafica de barras de distribucion de edades de los cardenales electores
+```{r}
+barplot(Edad, main= "Grafica de barras de distribucion de edades de los cardenales electores", horiz = F,las=1, xlim=c(0, 80), col= "Blue", ylab = "Intervalos de edades", xlab ="nombre de los cardinales", names.arg = Nombre)
+```
+#7.  Realice un gráfico de barras de distribución del origen de los cardenales por continente y agrupe con su edad
+
+
+#8.  Represente el número de los cardenales que trabajen para el Gobierno del vaticano y los que están asignados a alguna sede, esto por el grafico de barras, agrupe con su edad
+
+
+#9.  Realice estadísticos descriptivos e interprete
+#Para esta parte se usara el datasedcompleto y se buscara cual ha sido la edad de los cardenales mas estable, en relacion a la media 
+```{r}
+attach(dtcomp)
+```
+```{r} 
+median(Edad)                #media
+sd(Edad)                    #Desviacion estandar)
+(sd(Edad)/mean(Edad))*100   #Coeficiente de variacion
+```
+#La media indica que el 50% de los cardenales seleccionados en la muestra tienen edad igual o superior a 74 años
+#La desviacion estandar indica que la edad de los 136 cardenales presentan una variabilidad al rededor del promedio de 6.646042 
+#El coeficiente de variacion indica que las edades de los 136 cardenales varian con relacion al promedio en 9.227787%
+
+#10. 	Presente en forma de tabla los cardenales que se encuentren dentro de [(edad) ̅+σ_edad,(edad) ̅-σ_edad ]
+
+
+#11.	A partir de los datos de la E2 formulé una hipótesis sobre la edad del próximo pontífice, justifique su hipótesis, ¿es factible su hipótesis bajo que un marco teórico soportado en estadística?
+

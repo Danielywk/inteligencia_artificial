@@ -1,0 +1,101 @@
+---
+title: "Statistic Analysis"
+output: html_notebook
+---
+```{r}
+# Load the libraries
+#set the workdirectory setwd("/Users/isa/Documents/Rprojects/Rworkspace")
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+library(factoextra)
+library(car)
+#dcovid<-read.csv("covid.csv", header=TRUE)
+```
+```{r}
+str(dcovid)
+dcovid$ORIGEN
+```
+```{r}
+
+```
+```{r}
+head(dcovidCon)
+```
+
+```{r}
+dcovidCon<-dcovid[(dcovid$CLASIFICACION_FINAL==3),]
+dcovidConH<-dcovidCon[dcovidCon$SEXO==2,]
+summary(dcovidConH$EDAD)
+View(dcovidConH)
+#MENS WITH ASMA
+dcovidConHE<-dcovidConH[dcovidConH$EDAD,]
+dcovidHconA<-dcovidConHE[dcovidConHE$ASMA==1,]
+```
+
+```{r}
+
+
+```
+
+```{r}
+# BOXPLOT MENS WITH ASMA
+#View(dcovidHconA$EDAD)
+boxplot(dcovidHconA$EDAD)
+hist(dcovidHconA$EDAD)
+```
+
+```{r}
+# MENS WITHOUT ASMA
+dcovidSin<-dcovid[(dcovid$CLASIFICACION_FINAL==7),]
+dcovidSinH<-dcovidSin[(dcovidSin$SEXO==2),]
+dcovidSinHE<-dcovidSinH[dcovidSinH$EDAD,]
+dcovidHSinA<-dcovidSinHE[dcovidSinHE$ASMA==2,]
+
+```
+
+```{r}
+# BOXPLOT MENS WITHOUT ASMA
+#View(dcovidHconA$EDAD)
+boxplot(dcovidHSinA$EDAD)
+hist(dcovidHSinA$EDAD)
+```
+
+```{r}
+#SHOW
+length(dcovidHconA$EDAD)
+length(dcovidHSinA$EDAD)
+```
+
+```{r}
+# TEST OF NORMALITY, MENS WITH COVID
+lillie.test(dcovidHconA$EDAD)
+```
+
+```{r}
+# TEST OF NORMALITY, MENS WITHOUT COVID
+lillie.test(dcovidHSinA$EDAD)
+```
+
+```{r}
+install.packages("lawstat")
+```
+
+```{r}
+# lEVENETEST MENS WITH ASMA, HAVE NOT HOMOCEDASTY AND IS ANORMAL
+leveneTest(y=dcovidConH$EDAD, group = dcovidConH$ASMA, center = "median")
+```
+
+```{r}
+# lEVENETEST MENS WITHOUT ASMA, HAVE HOMOCEDASTY AND IS ANORMAL
+leveneTest(y=dcovidSinH$EDAD, group = dcovidSinH$ASMA==2, center = "median")
+```
+
+```{r}
+nreligion<-read.csv("encuesta.csv", header=TRUE)
+```
+
+```{r}
+
+```
+

@@ -1,0 +1,173 @@
+---
+title: "R Notebook"
+output: html_notebook
+author: ISAIAS AMADO CARREÑO
+---
+
+# LIBRERIAS
+```{r}
+library(ggplot2)
+library(scatterplot3d)
+library(knitr)
+```
+# ESTABLECIENDO DIRECTORIO
+```{r}
+setwd("/Users/isa/IdeaProjects/RProjects/RECONOCIMIENTO/PRACTICE")
+getwd()
+```
+# CÓDIGO
+```{r}
+data <- read.csv("learnds.csv", header = TRUE)
+```
+
+# Gráfica de comparación
+```{r}
+ggplot(data, aes(x = x, y = y)) +
+  geom_point() +
+  geom_line() +
+  xlab("Valores de X") +
+  ylab("Valores de Y") +
+  ggtitle("Comparación de X y Y")
+```
+```{r}
+df <- read.csv("DATOSENTRENAMIENTO.csv", header = TRUE)
+str(df)
+```
+
+# GRAFICA (X, Y, Z)
+# VOLTAJE, CORRIENTE, MRR
+```{r}
+ggplot(df, aes(x = VOLTAJE.VS.V., y = CORRIENTE.Ip.A., color = MRR, label = MRR)) +
+  geom_point(size = 3) +
+  xlab("Voltaje") +
+  ylab("Corriente") +
+  ggtitle("Gráfica de 3 dimensiones") +
+  geom_text(hjust=-0.1, vjust=2, size= 3) +
+  geom_line()+
+  scale_color_gradient(low = "blue", high = "red")+
+  theme_minimal()
+```
+
+# GRAFICA (X, Y, Z)
+# VOLTAJE, CORRIENTE, MRR
+```{r}
+ggplot(df, aes(x = VOLTAJE.VS.V., y = CORRIENTE.Ip.A., color = MRR, label = MRR)) +
+  geom_point(size = 3) +
+  labs(x = "Voltaje", y = "Corriente", color = "MRR") +
+  ggtitle("Gráfica de 3 dimensiones") +
+        geom_text(hjust=-0.1, vjust=2, size= 3) +
+  scale_color_gradient(low = "blue", high = "red")+
+  theme_minimal()
+
+```
+
+
+```{r}
+multiplot <- function(..., cols = 1) {
+  require(grid)
+
+  plots <- list(...)
+  numPlots = length(plots)
+
+  if (numPlots > cols) {
+    cols = numPlots
+  }
+
+  layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                   ncol = cols, nrow = ceiling(numPlots/cols))
+
+  grid.newpage()
+  pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+
+  for (i in 1:numPlots) {
+    matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+    print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                    layout.pos.col = matchidx$col))
+  }
+}
+
+```
+
+# GRAFICA (X, Y, Z)
+# VOLTAJE, CORRIENTE, MRR
+```{r}
+# Crear el histograma para la variable x
+p1 <- ggplot(df, aes(x = VOLTAJE.VS.V.)) +
+  geom_histogram(fill = "steelblue", color = "white") +
+  labs(x = "Variable X", y = "Voltaje") # +
+        # geom_text(stat = "count", aes(label = stat(count)),
+                 # vjust = -0.5, size = 3, color = "red")
+
+# Crear el histograma para la variable y
+p2 <- ggplot(df, aes(x = CORRIENTE.Ip.A.)) +
+  geom_histogram(fill = "steelblue", color = "white") +
+  labs(x = "Variable Y", y = "Corriente")
+
+# Crear el histograma para la variable z
+p3 <- ggplot(df, aes(x = MRR)) +
+  geom_histogram(fill = "steelblue", color = "white") +
+  labs(x = "Variable Z", y = "DOC")
+
+# Mostrar los histogramas en una sola imagen
+multiplot(p1, p2, p3, cols = 3)  # Función multiplot para mostrar los histogramas en una sola imagen
+```
+
+# GRAFICA (X, Y, Z)
+# VOLTAJE, CORRIENTE, MRR
+```{r}
+
+scatterplot3d(df$VOLTAJE.VS.V., df$CORRIENTE.Ip.A., df$MRR, color = "blue", pch = 16,
+              xlab = "Voltaje", ylab = "Corriente", zlab = "MRR")
+# Agregar etiquetas a los puntos
+text(df$VOLTAJE.VS.V., df$CORRIENTE.Ip.A., df$DOC, labels = paste("(", df$MRR, ",", df$CORRIENTE.Ip.A., ",", df$DOC, ")"),
+     pos = 3, offset = 0.5, col = "red")
+```
+
+# GRAFICA (X, Y, Z)
+# CORRIENTE, FRECUENCIA, MRR
+```{r}
+ggplot(df, aes(x = CORRIENTE.Ip.A., y = FRECUENCIA.Khz., color = MRR, label = MRR)) +
+        geom_point(size = 3) +
+        labs(x = "Corriente", y = "Frecuencia", color = "MRR") +
+        ggtitle("Gráfica de 3 dimensiones") +
+        geom_text(hjust=-0.1, vjust=2, size= 3) +
+        scale_color_gradient(low = "blue", high = "red")+
+        theme_minimal()
+```
+
+```{r}
+scatterplot3d(df$CORRIENTE.Ip.A., df$FRECUENCIA.Khz., df$MRR, color = "blue", pch = 16,
+              xlab = "Corriente", ylab = "Frecuencia", zlab = "MRR")
+```
+
+# GRAFICA (X, Y, Z)
+# VOLTAJE, CORRIENTE, DOC
+```{r}
+ggplot(df, aes(x = VOLTAJE.VS.V., y = CORRIENTE.Ip.A., color = DOC, label = DOC)) +
+        geom_point(size = 3) +
+        labs(x = "Voltaje", y = "Corriente", color = "DOC") +
+        ggtitle("Gráfica de 3 dimensiones") +
+        geom_text(hjust=-0.1, vjust=2, size= 3) +
+        scale_color_gradient(low = "blue", high = "red")+
+        theme_minimal()
+```
+```{r}
+scatterplot3d(df$VOLTAJE.VS.V., df$CORRIENTE.Ip.A., df$DOC, color = "blue", pch = 16,
+              xlab = "VOLTAJE", ylab = "CORRIENTE", zlab = "DOC")
+```
+
+# GRAFICA (X, Y, Z)
+# CORRIENTE, FRECUENCIA, DOC
+```{r}
+ggplot(df, aes(x = CORRIENTE.Ip.A., y = FRECUENCIA.Khz., color = DOC, label = DOC)) +
+        geom_point(size = 3) +
+        labs(x = "Corriente", y = "Frecuencia", color = "DOC") +
+        ggtitle("Gráfica de 3 dimensiones") +
+        geom_text(hjust=-0.1, vjust=2, size= 3) +
+        scale_color_gradient(low = "blue", high = "red")+
+        theme_minimal()
+```
+```{r}
+scatterplot3d(df$CORRIENTE.Ip.A., df$FRECUENCIA.Khz., df$DOC, color = "blue", pch = 16,
+              xlab = "CORRIENTE", ylab = "FRECUENCIA", zlab = "DOC")
+```

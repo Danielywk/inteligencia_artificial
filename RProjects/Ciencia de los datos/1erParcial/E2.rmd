@@ -1,0 +1,106 @@
+---
+title: "R Notebook"
+author: isa
+date: 19/08/22
+output: html_notebook
+---
+
+
+```{r}
+# WEBSCRAPPING
+library(rvest)
+webpage <- read_html("https://es.wikipedia.org/wiki/Anexo:Cardenales")
+
+tablas <- html_table(webpage)
+class(tablas)
+tablas
+
+consistorio1=(tablas[[1]])
+consistorio2=(tablas[[2]])
+consistorio3=(tablas[[3]])
+
+# ELIMINANDO COLUMNAS
+consistorio1$Fotografía <- NULL
+consistorio2$Fotografía <- NULL
+consistorio3$Fotografía <- NULL
+
+consistorio1$Escudo <- NULL
+consistorio2$Escudo <- NULL
+consistorio3$Escudo <- NULL
+```
+
+
+```{r}
+# CREANDO DATASET CON CARDENALES ELECTORES Y NUEVOS
+write.csv(consistorio1,"nuevoconsistorio.csv")
+write.csv(consistorio2,"electores.csv")
+write.csv(consistorio3,"noelectores.csv")
+```
+
+```{r}
+# LEYENDO DATA COMPLETA CON CARDENALE ELECTORES Y NUEVOS
+consistorio <- read.csv("consistorio.csv")
+str(consistorio)
+```
+
+Type any R code in the chunk, for example:
+```{r}
+# ELIMINANDO CARDENALES NO ELECTORES
+summary(consistorio$EDAD)
+```
+
+
+```{r}
+#2 ELIMINAR CARDENALES NO ELECTORES > 80
+consistorio <- consistorio[consistorio$EDAD!=80,]
+summary(consistorio$EDAD)
+```
+
+```{r}
+# BOXPLOT CON OUTLIERS
+boxplot(consistorio$EDAD)
+```
+
+```{r}
+# GRÁFICO DE BARRAS, DISTRIBUCIÓN DE EDAD
+hist(consistorio$EDAD, main = "Histograma de edades", xlab = "Edad", ylab = "Totales")
+```
+
+
+```{r}
+asia <- consistorio[(consistorio$CONTINENTE==),]
+america <-
+africa <-
+europa <-
+australia <-
+```
+
+
+```{r}
+# NÚMERO DE CARDINALES ASIGNADOS AL VATICANO
+vaticano <- consistorio[consistorio$CARGO==1,]
+totalvaticano<- count(vaticano, "CARGO")
+totalvaticano
+#30
+```
+
+
+
+```{r}
+# NÚMERO DE CARDINALES ASIGNADOS A UNA SEDE
+sede <- consistorio[consistorio$CARGO==0,]
+totalsede<-count(sede, "CARGO")
+totalsede
+#106
+```
+
+```{r}
+hist(consistorio$CARGO, main = "Histograma de Cargos", xlab = "0 = Sede, 1 = Vaticano", ylab = "Totales")
+```
+```{r}
+
+```
+
+```{r}
+
+```

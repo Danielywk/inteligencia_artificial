@@ -1,0 +1,81 @@
+---
+title: "R Notebook"
+author: isa
+date: 14/10/22
+output: html_notebook
+---
+
+
+```{r}
+setwd("/Users/isa/CLionProjects/RProjects/Ciencia de los datos")
+PIB <- read.csv("PIBS.csv", header = TRUE)
+```
+
+Type any R code in the chunk, for example:
+
+```{r}
+library(readr)
+library(tidyverse)
+library(data.table)
+library(dplyr)
+library(ggridges)
+library(ggplot2)
+library(rvest)
+library(tidyr)
+library(purrr)
+library(stringr)
+library(visreg)
+library(scales)
+library(purrr)
+```
+
+
+```{r}
+str(PIB)
+```
+
+```{r}
+ARG <- PIB[PIB$WEO.Country.Code == 213,]
+MEX <- PIB[PIB$WEO.Country.Code == 273,]
+USA <- PIB[PIB$WEO.Country.Code == 111,]
+```
+
+```{r}
+plotd <- ARG %>%
+  group_by(X2000) %>%
+  summarize(n = n()) %>%
+  mutate(pct = n/sum(n),
+         lbl = scales::percent(pct))
+ggplot(plotd, aes(x = factor(X2000,
+                             labels = c("2000", "2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010")),
+                  y = n)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = n), vjust = -0.3) +
+  labs(fill = " ",
+       x = "",
+       y = "Frecuencia") +
+  theme(legend.position = "none")
+```
+```{r}
+
+```
+```{r}
+
+```
+
+```{r}
+reg.data = as.data.frame(read.table(textConnection(ARG), header=TRUE))
+
+promedio <- as.data.frame(x = colMeans(reg.data[c("X2000", "X2001", "X2002", "X2003")]))
+paleta <- c("#999999", "#E69F00", "#56B4E9", "#009E73")
+ggplot(promedio,
+       aes(x=rownames(promedio), y=promedio[,1])) +
+  xlab("Valores") +
+  ylab("Promedio") +
+  geom_point(size=5, colour=paleta)
+```
+
+
+```{r}
+
+```

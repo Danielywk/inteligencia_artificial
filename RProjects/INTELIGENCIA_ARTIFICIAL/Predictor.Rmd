@@ -1,0 +1,57 @@
+---
+title: "R Notebook"
+output: html_notebook
+parametros<-read.csv("parametros.csv", header=TRUE)
+---
+```{r}
+plot(cars)
+library("ggplot2")
+library("dplyr")
+library("factoextra")
+library("lubridate")
+library("stringr")
+library("tidyr")
+```
+
+```{r}
+parametros<-read.csv("parametros.csv", header=TRUE)
+```
+
+```{r}
+View(parametros)
+str(parametros)
+summary(parametros)
+```
+
+```{r}
+#Función de membesia
+humedad<-parametros[(parametros$HUMEDAD<=64),]
+hist(humedad$TEMPERATURA)
+
+```
+
+```{r}
+humedadmax<-parametros[(parametros$HUMEDAD==64),]
+humedadmin<-parametros[(parametros$HUMEDAD==62),]
+humedadprom<-parametros[(parametros$HUMEDAD==63),]
+temperaturaMax<-parametros[(parametros$TEMPERATURA==27),]
+temperaturaAlta<-parametros[(parametros$TEMPERATURA==26),]
+temperaturaMedia<-parametros[(parametros$TEMPERATURA==25),]
+temperaturMinima<-parametros[(parametros$TEMPERATURA==24),]
+```
+
+```{r}
+#Reglas de inferencia
+TA<-mean(temperaturaAlta$TEMPERATURA)
+Hm<-mean(humedadmin$HUMEDAD)
+if(TA==241 && Hm == 62)
+  print("Hace buen calor y la temperatura se siente fresca, lo más probable es que llueva")
+```
+
+
+```{r}
+
+```
+```{r}
+
+```

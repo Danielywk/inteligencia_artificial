@@ -1,0 +1,348 @@
+---
+title: "R Notebook"
+author: ISAIAS AMADO CARREÑO
+date: 20/10/22
+output: html_notebook
+---
+
+```{r}
+setwd("/Users/isa/CLionProjects/RProjects/Ciencia de los datos/1erParcial")
+```
+
+
+CARGANDO LIBRERIAS
+```{r}
+library(rvest)
+library(tidyr)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(forcats)
+```
+
+
+REALIZANDO WEB SCRAPPING
+```{r}
+webpage <- read_html("https://datosmacro.expansion.com/demografia/religiones")
+```
+
+
+```{r}
+tablas <- html_table(webpage)
+class(tablas)
+tablas
+```
+
+```{r}
+#consistorio=(tablas[[2]])
+RELIGIONES=(tablas[1])
+```
+
+
+Type any R code in the chunk, for example:
+```{r}
+str(arabia)
+```
+
+
+```{r}
+write.xlsx(RELIGIONES, "RELIGIONES.xlsx")
+```
+
+CARGANDO LOS DATASET
+```{r}
+tasas<-read.csv("TASA_NATALIDAD.csv", header = TRUE)
+religiones<-read.csv("RELIGIONES.csv", header = TRUE)
+```
+
+1.- ALEMANIA
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, ALEMANIA,group=1,label=ALEMANIA)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "ALEMANIA",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+
+2.- ARABIA SAUDITA
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, ARABIA.SAUDITA,group=1,label=ARABIA.SAUDITA)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "ARABIA SAUDITA",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+3.- ARGENTINA
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, ARGENTINA,group=1,label=ARGENTINA)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "ARGENTINA",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+
+```{r}
+religiones %>%
+  mutate(Argentina = fct_reorder(Argentina, Países)) %>%
+ggplot( aes(x=Argentina, y=Países, label=Países,
+))+
+  geom_bar(stat="identity",position = "dodge", fill="cadetblue4", alpha=.6, width=.9) +
+  coord_flip()  +
+  scale_y_continuous("PORCENTAJES")+
+  geom_text(aes(hjust=0, vjust=0))+
+  theme_bw()+
+  labs(title = "ARGENTINA",
+       subtitle = "RELIGION EN PORCENTAJES") +
+  theme(legend.position = "top")+
+  theme_minimal()
+```
+
+4.- AUSTRALIA
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, AUSTRALIA,group=1,label=AUSTRALIA)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "AUSTRALIA",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+
+5.- BRASIL
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, BRASIL,group=1,label=BRASIL)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "BRASIL",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+
+6.- CANADÁ
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, CANADÁ,group=1,label=CANADÁ)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "CANADÁ",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+
+7.- CHINA
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, CHINA,group=1,label=CHINA)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "CHINA",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+
+8.- COREA DEL SUR
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, COREA.DEL.SUR,group=1,label=COREA.DEL.SUR)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "COREA DEL SUR",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+
+9.- ESTADOS UNIDOS
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, ESTADOS.UNIDOS,group=1,label=ESTADOS.UNIDOS)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "ESTADOS UNIDOS",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+
+10.- FRANCIA
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, FRANCIA,group=1,label=FRANCIA)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "FRANCIA",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+
+11.- INDIA
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, INDIA,group=1,label=INDIA)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "INDIA",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+
+12.- INDONESIA
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, INDONESIA,group=1,label=INDONESIA)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "INDONESIA",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+
+13.- ITALIA
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, ITALIA,group=1,label=ITALIA)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "ITALIA",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+
+14.- JAPÓN
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, JAPÓN,group=1,label=JAPÓN)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "JAPÓN",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+
+15.- MÉXICO
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, MÉXICO,group=1,label=MÉXICO)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "MÉXICO",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+
+16.- REINO UNIDO
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, REINO.UNIDO,group=1,label=REINO.UNIDO)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "REINO UNIDO",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+
+17.- RUSIA
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, RUSIA,group=1,label=RUSIA)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "RUSIA",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+
+18.- SUDÁFRICA
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, SUDÁFRICA,group=1,label=SUDÁFRICA)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") +
+  geom_line(size= .5, color = "blue")+
+  geom_text(hjust=0, vjust=0, size= 3)+
+  theme_bw()+
+  labs(title = "SUDÁFRICA",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top")
+```
+
+19.- TURQUÍA
+```{r}
+#dodge <- position_dodge(1)
+ggplot (tasas, aes (FECHA, TURQUÍA,group=1,label=TURQUÍA)) +
+  scale_y_continuous("INDICES") +
+  geom_point (size= 2, colour= "red") + # COLOCA EL PUNTO Y COLOR
+  geom_line(size= .5, color = "blue") + # DIBUJA LA LÍNEA CON COLOR
+  geom_text(hjust=0, vjust=0, size= 3)+ # COLOCA LOS VALORES EN LA GRÁFICA, FUNCIONA CON LABEL
+  geom_smooth(method='lm', formula=y~x, se=FALSE, col='dodgerblue1') + # FUNCIÓN DE LA REGRESIÓN LINEAL
+  theme_bw()+ # ESTABLECE UN TEMA
+  labs(title = "TURQUÍA",
+       subtitle = "CRECIMIENTO") +
+  theme(legend.position = "top") # COLOCA LOS TÍTULOS Y SUBTÍTULOS EN UNA POSICIÓN
+```
+```{r}
+alemania<-select(tasas, FECHA, ALEMANIA)
+```
+
+
+```{r}
+mod1 <- lm(FECHA ~ ALEMANIA, data=tasas)
+mod1 # Para imprimir el objeto mod1
+summary(mod1)
+```

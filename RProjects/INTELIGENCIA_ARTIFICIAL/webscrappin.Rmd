@@ -1,0 +1,66 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+/Users/softcomputing/ciencia de datos
+```{r}
+library(rvest)
+```
+
+
+```{r}
+webpage <- read_html("https://es.wikipedia.org/wiki/Anexo:Cardenales")
+```
+
+
+```{r}
+tablas <- html_table(webpage) 
+class(tablas)
+tablas
+```
+
+```{r}
+consistorio1=(tablas[[1]])
+consistorio2=(tablas[[2]])
+consistorio3=(tablas[[3]])
+
+# ELIMINANDO COLUMNAS
+consistorio1$Fotografía <- NULL
+consistorio2$Fotografía <- NULL
+consistorio3$Fotografía <- NULL
+
+consistorio1$Escudo <- NULL
+consistorio2$Escudo <- NULL
+consistorio3$Escudo <- NULL
+
+```
+
+```{r}
+View(consistorio1)
+```
+
+```{r}
+write.csv(consistorio1,"nuevoconsistorio.csv")
+write.csv(consistorio2,"electores.csv")
+write.csv(consistorio3,"noelectores.csv")
+```
+
+
+```{r}
+
+
+```
+
+
+```{r}
+consistorio2
+```
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+

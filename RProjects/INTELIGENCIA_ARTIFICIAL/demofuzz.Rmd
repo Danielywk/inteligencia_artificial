@@ -1,0 +1,364 @@
+
+
+
+
+```{r}
+trape<-matrix()
+
+trian<-matrix()
+
+trian1<-matrix()
+
+tam<-1000
+
+x<-seq(0,1,length.out=tam)
+
+a<-0.3
+b<-0.4
+c<-0.5
+d<-0.7
+
+for (j in 1:tam) {
+  
+  p1<-(x[j]-a)/(b-a)
+  p2<-(d-x[j])/(d-c)
+  
+  p3<-min(p1,1,p2)
+  
+  trape[j]<-max(p3,0)
+  
+}
+
+
+
+a<-0.0
+b<-0.2
+c<-0.6
+
+
+for (j in 1:tam) {
+  
+  p1<-(x[j]-a)/(b-a)
+  p2<-(c-x[j])/(c-b)
+  
+  p3<-min(p1,p2)
+  
+  trian[j]<-max(p3,0)
+  
+}
+
+
+
+a<-0.6
+b<-0.7
+c<-0.8
+
+
+for (j in 1:tam) {
+  
+  p1<-(x[j]-a)/(b-a)
+  p2<-(c-x[j])/(c-b)
+  
+  p3<-min(p1,p2)
+  
+  trian1[j]<-max(p3,0)
+  
+}
+
+
+
+
+
+
+
+plot(x,trape, type="l", xlab = "% de humedad (h)", col="red", ylab = "u(h)", main= "humedad",lwd=3,frame=FALSE, font.lab = 2,font.axis = 2)
+lines(x,trian, col="green", lwd=3)
+lines(x,trian1, col="blue", lwd=3)
+
+```
+
+
+```{r}
+mediah<-matrix()
+
+ph<-matrix()
+
+altah<-matrix()
+
+tam<-1000
+
+x<-seq(0,1,length.out=tam)
+
+a<-0.3
+b<-0.4
+c<-0.5
+d<-0.7
+for (j in 1:tam) {
+
+p1<-(humedad1[j]-a)/(b-a)
+p2<-(d-humedad1[j])/(d-c)
+p3<-min(p1,1,p2)
+
+mediah[j]<-max(p3,0)
+
+}
+
+a<-0.0
+b<-0.2
+c<-0.6
+for (j in 1:tam) {
+p1<-(humedad1[j]-a)/(b-a)
+p2<-(c-humedad1[j])/(c-b)
+p3<-min(p1,p2)
+
+ph[j]<-max(p3,0)
+}
+
+a<-0.6
+b<-0.7
+c<-0.8
+for (j in 1:tam) {
+p1<-(humedad1[j]-a)/(b-a)
+p2<-(c-humedad1[j])/(c-b)
+p3<-min(p1,p2)
+
+altah[j]<-max(p3,0)
+}
+humedad1
+altah
+mediah
+ph
+
+plot(x,altah, type="l", xlab = "% de humedad (h)", col="red", ylab = "u(h)", main= "humedad",lwd=3,frame=FALSE, font.lab = 2,font.axis = 2)
+lines(x,mediah, col="green", lwd=3)
+lines(x,ph, col="blue", lwd=3)
+```
+
+
+```{r}
+trape<-matrix()
+
+trian<-matrix()
+
+trian1<-matrix()
+
+tam<-1000
+
+x<-seq(0,1,length.out=tam)
+
+a<-0.2
+b<-0.4
+c<-0.5
+d<-1
+
+for (j in 1:tam) {
+  
+  p1<-(x[j]-a)/(b-a)
+  p2<-(d-x[j])/(d-c)
+  
+  p3<-min(p1,1,p2)
+  
+  trape[j]<-max(p3,0)
+  
+}
+
+
+
+a<-0.0
+b<-0.2
+c<-0.4
+
+
+for (j in 1:tam) {
+  
+  p1<-(x[j]-a)/(b-a)
+  p2<-(c-x[j])/(c-b)
+  
+  p3<-min(p1,p2)
+  
+  trian[j]<-max(p3,0)
+  
+}
+
+
+
+a<-0.6
+b<-0.7
+c<-0.8
+
+
+for (j in 1:tam) {
+  
+  p1<-(x[j]-a)/(b-a)
+  p2<-(c-x[j])/(c-b)
+  
+  p3<-min(p1,p2)
+  
+  trian1[j]<-max(p3,0)
+  
+}
+
+
+
+
+
+
+
+plot(x,trape, type="l", xlab = "Temperatura (c)", col="red", ylab = "u(c)", main= "Temperatura",lwd=3,frame=FALSE, font.lab = 2,font.axis = 2)
+lines(x,trian, col="green", lwd=3)
+lines(x,trian1, col="blue", lwd=3)
+
+```
+
+Fuzzifcación de temperaratura
+
+
+```{r}
+
+
+
+
+#x<-seq(0,1,length.out=tam)
+
+porhume<-0.25
+
+a<-0.3
+b<-0.4
+c<-0.5
+d<-0.7
+
+
+  
+  p1<-(porhume-a)/(b-a)
+  p2<-(d-porhume)/(d-c)
+  
+  p3<-min(p1,1,p2)
+  
+  mediah<-max(p3,0)
+  
+
+
+
+a<-0.0
+b<-0.2
+c<-0.6
+
+
+  
+  p1<-(porhume-a)/(b-a)
+  p2<-(c-porhume)/(c-b)
+  
+  p3<-min(p1,p2)
+  
+  ph<-max(p3,0)
+  
+
+
+
+a<-0.6
+b<-0.7
+c<-0.8
+
+
+  p1<-(porhume-a)/(b-a)
+  p2<-(c-porhume)/(c-b)
+  
+  p3<-min(p1,p2)
+  
+  altah<-max(p3,0)
+  
+porhume
+altah
+mediah
+
+```
+
+
+```{r}
+
+
+
+
+tempe<-0.35
+
+a<-0.2
+b<-0.4
+c<-0.5
+d<-1
+
+
+  
+  p1<-(tempe-a)/(b-a)
+  p2<-(d-tempe)/(d-c)
+  
+  p3<-min(p1,1,p2)
+  
+  mediat<-max(p3,0)
+  
+
+
+
+
+a<-0.0
+b<-0.2
+c<-0.4
+
+
+
+  
+  p1<-(tempe-a)/(b-a)
+  p2<-(c-tempe)/(c-b)
+  
+  p3<-min(p1,p2)
+  
+   bajat<-max(p3,0)
+  
+
+
+
+
+a<-0.6
+b<-0.7
+c<-0.8
+
+
+
+  
+  p1<-(tempe-a)/(b-a)
+  p2<-(c-tempe)/(c-b)
+  
+  p3<-min(p1,p2)
+  
+  altat<-max(p3,0)
+  
+bajat
+mediat
+altat
+
+```
+
+
+```{r}
+ppb<-max(min(ph,bajat),min(mediah,bajat),min(mediah,mediat))
+
+ppm<- max(min(ph,mediat),min(altah,mediat),min(altah,altat))
+
+ppa<-max(min(altah,bajat),min(ph,altat),min(altah,altat))
+
+ppb
+ppm
+ppa
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

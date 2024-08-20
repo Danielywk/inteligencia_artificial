@@ -1,0 +1,225 @@
+---
+title: "SENTIMIENTOS"
+author: "ISAIAS AMADO CARREÑO"
+date: "2022-11-26"
+output:
+  html_document: default
+  pdf_document: default
+---
+# ESTABLECIENDO EL WORKSPACE
+```{r}
+setwd("/Users/isa/IdeaProjects/RProjects/Ciencia de los datos/2doParcial")
+```
+
+# ADQUIRIENDO LA DATA
+
+```{r}
+# download.file("https://raw.githubusercontent.com/jboscomendoza/rpubs/master/sentimientos_afinn/lexico_afinn.en.es.csv", "lexico_afinn.en.es.csv")
+```
+
+
+# INSTALANDO LIBRERIAS
+
+```{r}
+# install.packages("rtweet")
+# install.packages("tidytext")
+# install.packages("dplyr2")
+# install.packages("tidyverse")
+# install.packages("wordcloud")
+# install.packages("reshape2")
+# install.packages("RColorBrewer")
+```
+
+
+```{r}
+library(rtweet)
+library(tidytext)
+library(dplyr)
+library(tidyverse)
+library(wordcloud)
+library(reshape2)
+library(RColorBrewer)
+library(wordcloud)
+library(tm)
+library(lubridate)
+library(zoo)
+library(scales)
+library(ggplot2)
+```
+
+# COLOCANDO LAS CLAVES DE DESARROLLADOR DE TWITTER
+
+```{r}
+api_key <- "ywPoDXO9bybuQE4Uu2iDsMA2C"
+api_secret_key <- "i8beATeiqUq9CIzfuHSKYysIknMDzcZO4MSDcvJd16RPMUV66f"
+access_token <- "1579133973099257856-iivwUZhAX5qqtJJRfpCJgG3qMmZa1T"
+access_token_secret <- "FxiXCqLzyyAOBzNrNjm7iGMSXTQvjKz2LcQZU9eXBSOeF"
+app_name <- "SeleccionMexico"
+```
+
+# GURADANDO VALORES EN LA DATA TOKEN
+
+```{r}
+token <- create_token(
+  app = app_name,
+  consumer_key = api_key,
+  consumer_secret = api_secret_key,
+  access_token = access_token,
+  access_secret = access_token_secret)
+```
+
+# LEYENDO TWEETS
+
+```{r}
+tweets <- search_tweets(q="#MexicoVsPolonia",
+                        n= 1500,
+                        include_rts = FALSE,
+                        lang = "es")
+```
+```{r}
+dim(tweets)
+```
+
+# MOSTRANDO TWEETS LEÍDOS
+
+```{r}
+names(tweets)
+```
+
+
+```{r}
+tweets_token <- unnest_tokens(tbl=tweets,
+                              output = "word",
+                              input = "text",
+                              token = "words")
+```
+
+```{r}
+dim(tweets_token)
+```
+
+# CONTANDO LAS PALABRAS CON MAYOR FRECUENCIA
+
+```{r}
+count(tweets_token,
+      word,
+      sort = TRUE)
+```
+
+```{r}
+tweets_token <- filter(tweets_token, word!="de" & word!="que" & word!="el" & word!="https" & word!="t.co"& word!="en"& word!="la"& word!="a"& word!="un" & word!="los"& word!="fifaworldcup"& word!="se"& word!="y"& word!="del"& word!="por"& word!="es"& word!="con" & word!="mexicovspolonia"& word!="méxico"& word!="polonia"& word!="no"& word!="partido"& word!="lo"& word!="si"& word!="te"& word!="al"& word!="ya"& word!="mi"& word!="la")
+```
+
+```{r}
+tweets_token %>%
+  count(word, sort = TRUE) %>%
+  filter(n > 100) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n)) +
+  geom_text(aes(label=n), hjust= -0.2) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip()+
+  theme_minimal()
+```
+
+```{r}
+names(tweets_token)
+```
+
+
+```{r}
+afinn <- read.csv("lexico_afinn.en.es.csv", stringsAsFactors = F, fileEncoding = "latin1") %>%
+  tibble::as_tibble()
+diccionario<-select(afinn, -Word) # Forma simple 1
+
+```
+
+# ASIGNANDO VALORES A LAS PALABRAS ENCONTRADAS
+
+```{r}
+nov_corpus <- Corpus(VectorSource(tweets_token))
+
+
+nov_tdm <- TermDocumentMatrix(nov_corpus)
+
+
+nov_mat <- as.matrix(nov_tdm)
+
+nov_mat <- nov_mat %>% rowSums() %>% sort(decreasing = TRUE)
+nov_mat <- data.frame(Palabra = names(nov_mat), frec = nov_mat)
+nov_mat<-nov_mat[!(nov_mat$Palabra =="fuerza"),]
+
+# View(nov_mat)
+```
+
+
+# GENERANDO LA TABLA
+
+```{r}
+tabla<-inner_join(diccionario, nov_mat, by = "Palabra") %>%
+  mutate(Tipo = ifelse(Puntuacion > 0, "Positiva", "Negativa")) 
+
+tabla2<-mutate(tabla,puntaje=Puntuacion*frec)
+tabla2
+```
+
+# GUARDANDO EN DATAFRAMES PALABRAS POSITIVAS Y NEGATIVAS
+
+```{r}
+good <- filter(tabla2,Tipo=="Positiva")
+
+
+bad <- filter(tabla2,Tipo=="Negativa")
+```
+
+# GRAFICANDO LAS PALABRAS
+
+```{r}
+good <- arrange(good,-frec)
+bad <- arrange(bad,-frec)
+
+good1 <- good[1:15,]
+bad1 <- bad[1:15,]
+
+ggplot(data = good1, aes(x = Palabra, y=frec))+geom_col()+
+    coord_flip()
+
+ggplot(data = bad1, aes(x = frec, y=Palabra))+geom_col()
+
+```
+
+
+```{r}
+general <-mean(tabla2$puntaje)
+general
+length(good$Palabra)
+length(bad$Palabra)
+```
+
+# OBTENIENDO RESULTADOS
+
+```{r}
+# PALABRAS BUENAS
+wordcloud(
+  words = good$Palabra, 
+  freq = good$frec, 
+  max.words = 20, 
+  random.order = F, 
+  colors=brewer.pal(name = "Dark2", n = 3)
+  )
+# View(nov_mat)
+
+# PALABRAS MALAS
+
+wordcloud(
+  words = bad$Palabra, 
+  freq = bad$frec, 
+  max.words = 20, 
+  random.order = F, 
+  colors=brewer.pal(name = "Dark2", n = 3)
+  )
+# View(nov_mat)
+
+```
+
