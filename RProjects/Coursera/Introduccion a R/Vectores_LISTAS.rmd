@@ -1,0 +1,162 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+# Paquetes
+library("tidyverse")
+library("lubridate")
+library(dplyr)
+```
+
+```{r}
+# VECTORES ATÓMICOS
+# Un vector es un grupo de elementos de datos del mismo tipo almacenado en una secuencia en R. No puedes tener un vector que contenga valores lógicos y numéricos.
+# Tipos de vectores: lógicos, enteros, dobles, carácter (que contiene cadenas), complejos y sin formato.
+
+# Vectores numéricos: tipo double
+# Función c() para almacenar datos numéricos en un vector.
+vector_1 <- c(2.5, 48.5, 101.5)
+
+# Vector numérico
+vector_2 <- c(1L, 5L, 15L)
+
+vector_1
+vector_2
+
+```
+
+
+```{r}
+# Determinar el tipo de de datos de un vector
+typeof(c("a" , "b"))
+```
+
+```{r}
+# Crear listas
+# Las listas son diferentes de los vectores atómicos porque sus elementos pueden ser de cualquier tipo, por ejemplo, fechas, marcos de datos, vectores, matrices y más. Las listas pueden también contener otras listas.
+x <- c(1, 3, 5)
+names(x) <- c("a", "b", "c")
+x
+```
+```{r}
+# Listas
+lista <- list("a", 1L, 1.5, TRUE)
+list(list(list(1 , 3, 5)))
+
+# Determinar la estructura de una lista
+str(lista)
+```
+```{r}
+# Asignar nombres a varias listas
+list('Chicago' = 1, 'New York' = 2, 'Los Angeles' = 3)
+```
+```{r}
+
+```
+
+```{r}
+# R crea fechas en el formato estándar yyyy-mm-dd (año-mes-día) por defecto.
+# Para obtener la fecha de hoy
+today()
+
+#Para obtener la fecha-hora actual puedes ejecutar la función now(). Observa que la hora aparece expresada hasta con los segundos más cercanos.
+now()
+```
+```{r}
+#Para obtener la fecha-hora actual puedes ejecutar la función now(). Observa que la hora aparece expresada hasta con los segundos más cercanos.
+now()
+```
+```{r}
+# Convertir a partir de una cadena
+# Los datos de fecha/hora a menudo se expresan como cadenas. Puedes convertir cadenas en fechas y fecha-hora utilizando las herramientas provistas por lubridate. Estas herramientas automáticamente trabajan sobre el formato de fecha/hora.
+
+ymd_hms("2021-01-20 20:11:59")
+mdy("January 20th, 2021")
+dmy("20-Jan-2021")
+```
+```{r}
+# Marco de datos
+# Un marco de datos es un conjunto de columnas que contienen datos, que es similar a una hoja de cálculo o una tabla SQL.
+# Cada columna tiene un nombre en la parte superior que representa una variable e incluye una observación por fila.
+# Creando un dataframe
+
+data.frame(x = c(1, 2, 3) , y = c(1.5, 5.5, 7.5))
+```
+```{r}
+# Elementos de repaso
+
+# Función: Es un contenido de código reutilizable para realizar tareas específicas en R
+# Argumento: Información necesaria para la ejecución de una función en R
+# Comentario: Texto útil que describe o explica el código R, precedido de #
+# Variable: Representación de un valor en R que puede almacenarse para uso posterior
+# Tipos de dato: Atributo que describe cierto dato según sus valores, el lenguaje de programación o las operaciones que puede realizar
+# Vector: Grupo de elementos de datos del mismo tipo almacenados en una secuencia unidimensional en R
+# Canalización: Herramienta en R para expresar una secuencia de varias operaciones, representadas por %>%
+
+```
+```{r}
+# Paquetes en R
+
+# Puedes encontrar repositorios en Bioconductor, R-Forge, rOpenSci o GitHub, pero el repositorio más utilizado es la Red general de archivos R o CRAN. CRAN almacena los códigos y documentos que te ayudarán a instalar paquetes en tu propio espacio de RStudio.
+
+```
+```{r}
+# Paquetes para los analístas de datos
+# Es una colección de paquetes con una filosofía de diseño, común para la visualización y exploración de datos
+```
+```{r}
+# Uso de canalizaciones con el dataset `ToothGrowth`
+data(ToothGrowth)
+view(ToothGrowth)
+```
+```{r}
+# Filtrar
+filtrado_tg <- filter(ToothGrowth, dose == 0.5)
+View(filtrado_tg)
+
+# Clasificar
+arrange(filtrado_tg, len)
+# Clasifica u ordena por orden ascendente
+```
+# Otra manera de obtener el mismo resultado, usando una función anidada
+```{r}
+arrange(filter(ToothGrowth, dose == 0.5), len)
+```
+# Usando una canalización %>% (cmd + shift + m)
+# Filtra los valores correspondientes a 0.5
+# Clasifica los valores en base a la columna len (valor del diente), orden ascendente
+```{r}
+filtrado_toothg <- ToothGrowth %>%
+        filter(dose == 0.5) %>%
+        arrange(len)
+filtrado_toothg
+```
+# Filtra los valores correspondientes a 0.5
+# AAgrupa los valores en base a la comuna supp(valor string, agrupa alfabéticamente)
+# Clasifica en un orden ascendente (de menor a mayor, valor del diente)
+# Obtiene la media de la columna len, elimina los sobrantes
+
+```{r}
+filtrado_toothg <- ToothGrowth %>%
+        filter(dose == 0.5) %>%
+        group_by(supp) %>%
+        arrange(len) %>%
+        summarise(mean_len = mean(len, na.rm = T), .group = "drop")
+filtrado_toothg
+```
+```{r}
+data("diamonds")
+head(diamonds)
+```
+```{r}
+colnames(diamonds)
+```
+```{r}
+mutate(diamonds, carat_2 = carat*100)
+head(diamonds)
+```
+```{r}
+
+```

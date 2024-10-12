@@ -1,0 +1,165 @@
+---
+título: "Lección 2: Crea tu propio marco de datos"
+archivo de salida: html_document
+---
+
+## Contexto de esta actividad
+Esta actividad se enfoca en crear y usar marcos de datos en `R`. Un marco de datos es un conjunto de columnas que contienen datos, que es similar a una hoja de cálculo o una tabla de SQL. Los marcos de datos son una de las herramientas básicas que usarás para trabajar con datos en `R`. Y puedes crear marcos de datos a partir de diferentes fuentes de datos.  
+
+Existen tres fuentes comunes para los datos:
+
+- Un `paquete` con datos al que se puede acceder cargando ese `paquete`
+- Un archivo externo como una hoja de cálculo o CSV que puede importarse a `R`
+- Datos generados desde cero usando código `R`
+
+Sin importar de dónde provienen los datos, lo más recomendable es guardarlos casi siempre en un objeto de marco de datos para trabajar con ellos. Ahora puedes empezar a crear y explorar marcos de datos con los bloques de código en el espacio RMD. Para interactuar con el bloque de código, haz clic en la flecha verde en la esquina superior derecha del bloque. El código ejecutado aparecerá en el espacio RMD y en tu consola.
+
+A lo largo de esta actividad, también tendrás la oportunidad de practicar escribir tu propio código haciendo cambios en los bloques de código tú mismo. Si encuentras un error o te trabas, siempre puedes consultar el archivo .rmd Lesson2_Dataframe_Solutions en la carpeta "Solutions" bajo "Week 3" para ver el código correcto.
+
+## Paso 1: Cargar paquetes
+
+Comienza instalando el paquete requerido; en este caso, debes instalar `tidyverse`. Si ya instalaste y cargaste `tidyverse` en esta sesión, puedes saltearte los bloques de código en este paso.
+
+```{r}
+install.packages("tidyverse")
+```
+
+Una vez que un paquete está instalado, puedes cargarlo ejecutando la función `library()` con el nombre del paquete dentro de los paréntesis:
+
+```{r}
+library(tidyverse)
+```
+
+## Paso 2: Crear un marco de datos
+
+A veces, necesitarás generar un marco de datos directamente en `R`. Existen diversas maneras de hacerlo; una de las más comunes es crear vectores de datos individuales y, luego, combinarlos en un marco de datos usando la función `data.frame()`.
+
+Esto funciona de la siguiente manera. Primero, crea un vector de nombres insertando cuatro nombres en este bloque de código entre las comillas y, luego, ejecútalo:
+
+```{r}
+names <- c("Isa", "Quia", "Ian", "Pepe")
+```
+
+Luego, crea un vector de edades agregando cuatro edades separadas por comas al bloque de código que aparece debajo. Asegúrate de ingresar valores numéricos para las edades o podrías tener un error. 
+
+```{r}
+age <- c(24, 5, 3, 2)
+```
+
+Con estos dos vectores, puedes crear un nuevo marco de datos llamado `people`:
+
+```{r}
+people <- data.frame(names, age)
+```
+
+## Paso 3: Inspeccionar el marco de datos
+
+Ahora que tienes este marco de datos, puedes usar algunas funciones diferentes para inspeccionarlo.
+
+Una función común que puedes usar para previsualizar los datos es la función `head()`, que muestra las columnas y las primeras filas de datos. Puedes ver cómo funciona la función `head()` ejecutando el bloque que aparece a continuación:
+
+```{r}
+head(people)
+```
+
+Además de `head()`, existen otras funciones útiles para resumir o previsualizar tus datos. Por ejemplo, las funciones `str()` y `glimpse()` ofrecen resúmenes de cada columna en tus datos organizados horizontalmente. Puedes ver estas dos funciones en acción ejecutando los bloques de código que aparecen a continuación:
+
+```{r}
+str(people)
+```
+
+```{r}
+glimpse(people)
+```
+
+También puedes usar `colnames()` para obtener una lista de los nombres de las columnas en tu conjunto de datos. Ejecuta el bloque de código que aparece debajo para ver esta función:
+
+```{r}
+colnames(people)
+```
+
+Ahora que tienes un marco de datos, puedes trabajar con él usando todas las herramientas en `R`. Por ejemplo, podrías usar mutate()` si quisieras crear una nueva variable que capte la edad de cada persona en 20 años. El bloque de código que aparece a continuación crea esa nueva variable:
+
+```{r}
+mutate(people, age_in_20 = age + 20)
+```
+
+
+## Paso 4: Inténtalo
+
+Para familiarizarte más con la creación y el uso de marcos de datos, usa los bloques de código que aparecen debajo para crear tu propio marco de datos personalizado. 
+
+Primero, crea un vector de cinco frutas diferentes. Puedes escribir directamente en el bloque de código que aparece debajo; simplemente coloca tu cursor en el cuadro y haz clic para escribir. Una vez que ingresaste las frutas que quieres en tu marco de datos, ejecuta el bloque de código.
+
+```{r}
+frutas <- c("Mango","Fresa","Papaya","Durazno","Banana")
+```
+
+Ahora, crea un nuevo vector con un número que represente tu propia clasificación personal de cada fruta. Dale un 1 a la fruta que más te gusta y un 5 a la fruta que menos te gusta. Recuerda, las calificaciones deben tener el mismo orden que las frutas que están arriba. Entonces, si tu fruta favorita es la última en la lista de arriba, la calificación `1` debe estar en la última posición en la lista que aparece debajo. Una vez que ingreses tus clasificaciones, ejecuta el bloque de código.
+
+```{r}
+puntaje <- c("2","4","3","4","2")
+```
+
+Por último, combina los dos vectores en un marco de datos. Puedes llamarlo `fruit_ranks`. Edita el bloque de código y ejecútalo para crear tu marco de datos.
+
+```{r}
+df_fruit <- data.frame(frutas, puntaje)
+head(df_fruit)
+```
+
+Después de que ejecutes este bloque de código, creará un marco de datos con tus frutas y clasificaciones.  
+
+## Conclusión de la actividad
+En esta actividad, aprendiste a crear marcos de datos, visualizarlos con funciones de resumen como `head()` y `glimpse()`, y luego realizar cambios con la función `mutate()`. Puedes seguir practicando estas destrezas modificando los bloques de código en el archivo rmd o usar este código como punto de partida en la consola de tu propio proyecto. Al explorar marcos de datos, analiza en qué se parecen y en qué se diferencian de las tablas con las que trabajaste en otras herramientas de análisis de datos como las hojas de cálculo y SQL. Los marcos de datos son uno de los pilares básicos que necesitarás para trabajar con datos en `R`. Por ende, comprender cómo crear y trabajar con marcos de datos es un primer paso importante para analizar datos.  
+
+Asegúrate de marcar esta actividad como finalizada en Coursera.
+
+
+## Trabajando con Tibbets
+```{r}
+diamonds_tibble <- as.tibble(diamonds)
+diamonds_tibble
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

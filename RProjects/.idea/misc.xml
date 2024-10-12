@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_22" project-jdk-name="22" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="22" project-jdk-type="JavaSDK" />
   <component name="RMarkdownSettings">
     <option name="renderProfiles">
       <map>
-        <entry key="file://$USER_HOME$/Documents/Proyectos R/Rprac04.Rmd">
-          <value>
-            <RMarkdownRenderProfile>
-              <option name="outputDirectoryUrl" value="file://$USER_HOME$/Documents/Proyectos R" />
-            </RMarkdownRenderProfile>
-          </value>
-        </entry>
         <entry key="file://$PROJECT_DIR$/Algoritmo_Gen.rmd">
           <value>
             <RMarkdownRenderProfile>
@@ -113,6 +106,13 @@
           <value>
             <RMarkdownRenderProfile>
               <option name="outputDirectoryUrl" value="file://$PROJECT_DIR$" />
+            </RMarkdownRenderProfile>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/Coursera/Introduccion a R/Vectores_LISTAS.rmd">
+          <value>
+            <RMarkdownRenderProfile>
+              <option name="outputDirectoryUrl" value="file://$PROJECT_DIR$/Coursera/Introduccion a R" />
             </RMarkdownRenderProfile>
           </value>
         </entry>
@@ -267,6 +267,13 @@
           <value>
             <RMarkdownRenderProfile>
               <option name="outputDirectoryUrl" value="file://$PROJECT_DIR$" />
+            </RMarkdownRenderProfile>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/../../../Proyectos R/Rprac04.Rmd">
+          <value>
+            <RMarkdownRenderProfile>
+              <option name="outputDirectoryUrl" value="file://$PROJECT_DIR$/../../../Proyectos R" />
             </RMarkdownRenderProfile>
           </value>
         </entry>

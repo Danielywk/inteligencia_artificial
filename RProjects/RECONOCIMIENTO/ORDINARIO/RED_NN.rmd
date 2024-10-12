@@ -22,13 +22,13 @@ library(nleqslv)
 
 # ESTABLECIENDO DIRECTORIO
 ```{r}
-setwd("/Users/isa/IdeaProjects/RProjects/RECONOCIMIENTO/ORDINARIO/")
+setwd("/Users/isa/Documents/GitHub/inteligencia_artificial/RProjects/RECONOCIMIENTO/ORDINARIO")
 ```
 
 # ABRIENDO DATASET
 ```{r}
 ds <- read.csv("movie_metadata.csv", header = TRUE)
-df <- read.csv("movie_metadata.csv", header = TRUE)
+da <- read.csv("movie_metadata.csv", header = TRUE)
 ```
 
 
