@@ -5,8 +5,8 @@ output: html_notebook
 
 ```{r}
 # Paquetes
-library("tidyverse")
-library("lubridate")
+library(tidyverse)
+library(lubridate)
 library(dplyr)
 ```
 
@@ -146,17 +146,22 @@ filtrado_toothg <- ToothGrowth %>%
         summarise(mean_len = mean(len, na.rm = T), .group = "drop")
 filtrado_toothg
 ```
+
+
 ```{r}
 data("diamonds")
-head(diamonds)
+diamonds
 ```
 ```{r}
 colnames(diamonds)
 ```
+
+
 ```{r}
 mutate(diamonds, carat_2 = carat*100)
 head(diamonds)
 ```
+
 ```{r}
 
 ```

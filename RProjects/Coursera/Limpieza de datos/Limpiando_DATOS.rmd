@@ -2,21 +2,106 @@
 title: "R Notebook"
 output: html_notebook
 ---
+# Instalando los paquetes
+# Here = Consula de datos
+# Skimr = Visualización de datos
+# Janitor = Limpieza de datos
 
-The [R plugin](https://www.jetbrains.com/help/pycharm/r-plugin-support.html) for IntelliJ-based IDEs provides
-handy capabilities to work with the [R Markdown](https://www.jetbrains.com/help/pycharm/r-markdown.html) files.
-To [add](https://www.jetbrains.com/help/pycharm/r-markdown.html#add-code-chunk) a new R chunk,
-position the caret at any line or the code chunk, then click "+".
-
-The code chunk appears:
 ```{r}
+options(repos = c(CRAN = "https://cloud.r-project.org/"))
 ```
 
-Type any R code in the chunk, for example:
 ```{r}
-mycars <- within(mtcars, { cyl <- ordered(cyl) })
-mycars
+library(palmerpenguins)
 ```
 
-Now, click the **Run** button on the chunk toolbar to [execute](https://www.jetbrains.com/help/pycharm/r-markdown.html#run-r-code) the chunk code. The result should be placed under the chunk.
-Click the **Knit and Open Document** to build and preview an output.
+```{r}
+library(here)
+library(skimr)
+library(janitor)
+library(dplyr)
+library(tidyverse)
+```
+
+# Visualizar eñ contenido de los datos, resumen
+```{r}
+skim_without_charts(penguins)
+```
+
+# Alternativa: glimpse()
+```{r}
+glimpse(penguins)
+```
+
+# Visualizar una columna
+```{r}
+penguins %>%
+        select(species)
+```
+# Visualiar todas las columnas excepto una
+```{r}
+penguins %>%
+        select(-species)
+```
+
+# Cambiar el nombre a una columna
+```{r}
+penguins %>%
+        rename(island_new = island)
+
+rename_with(penguins, toupper)
+
+# Garantiza que solo haya carácteres números y guines bajos en los nombres de las columnas
+clean_names(penguins)
+
+```
+```{r}
+penguins %>%
+  # Ordena los datos por la columna bill
+        arrange(bill_length_mm) %>%
+  # Ordena en ordén descendente
+        arrange(-bill_length_mm)
+```
+```{r}
+penguins2 <- penguins %>%
+  # Ordena los datos por la columna bill
+        arrange(bill_length_mm) %>%
+  # Ordena en ordén descendente
+        arrange(-bill_length_mm)
+tibble(penguins2)
+```
+
+# Agrupa los datos por la columna isla, oculta o no cuenta las filas con NA
+# y obtiene el promedio de tamaño del pico de los pinguinos
+```{r}
+penguins %>%
+        group_by(island) %>%
+        drop_na() %>%
+        summarise(mean_bill_length_mm = mean(bill_length_mm))
+```
+
+# Se hace uso de la función max para saber en que isla vivia el pinguino con el pico
+# más largo
+```{r}
+penguins %>%
+        group_by(island) %>%
+        drop_na() %>%
+        summarise(max_bill_length_mm = max(bill_length_mm))
+```
+# Agrupa los datos en base a 4 parámetros: species, island, el pico más grande,
+
+```{r}
+penguins %>%
+        group_by(species, island) %>%
+        drop_na() %>%
+        summarise(max_bl = max(bill_length_mm), mean_bl = mean(bill_length_mm))
+```
+
+# Para filtrar los datos en base a una categoria y valor específico
+```{r}
+penguins %>% filter(species == "Adelie")
+```
+
+```{r}
+
+```

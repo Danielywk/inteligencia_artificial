@@ -1,0 +1,139 @@
+---
+título: "Lección 3: Limpiar datos"
+archivo de salida: html_document
+---
+
+## Contexto de esta actividad
+
+En esta actividad, repasarás un escenario y te enfocarás en limpiar datos reales en R. Aprenderás más acerca de las funciones de limpieza de datos y realizarás cálculos básicos para sacar conclusiones iniciales a partir de tus datos.
+
+A lo largo de esta actividad, también tendrás la oportunidad de practicar escribir tu propio código haciendo cambios en los bloques de código tú mismo. Si encuentras un error o te trabas, siempre puedes consultar el archivo .rmd Lesson2_Clean_Solutions en la carpeta "Solutions" bajo "Week 3" para ver el código correcto. 
+
+## El escenario
+
+En este escenario, eres un analista de datos júnior que trabaja para una empresa de reservas hoteleras. Se te pidió que limpies un archivo .csv que se creó después de consultar una base de datos para combinar dos tablas diferentes de hoteles distintos. Para aprender más acerca de estos datos, necesitarás usar funciones para tener una vista previa de la estructura de los datos, que incluye sus columnas y filas. Además, deberás usar funciones de limpieza básicas para preparar estos datos para su análisis.  
+
+## Paso 1: Cargar paquetes
+
+Para comenzar a limpiar tus datos, necesitarás instalar los paquetes requeridos. Si ya instalaste y cargaste `tidyverse`, skimr` y `janitor` en esta sesión, puedes saltearte los bloques de código en este paso.
+
+```{r}
+install.packages("tidyverse")
+install.packages("skimr")
+install.packages("janitor")
+```
+
+Una vez que un paquete está instalado, puedes cargarlo ejecutando la función `library()` con el nombre del paquete dentro de los paréntesis:
+
+```{r}
+library(tidyverse)
+library(skimr)
+library(janitor)
+```
+
+## Paso 2: Importar datos
+
+Los datos que se te pidió que limpiaras son actualmente un archivo .csv externo. Para verlos y limpiarlos en `R`, necesitarás importarlos. El paquete `readr` de la biblioteca `tidyverse` tiene diversas funciones para "cargar" o importar datos, incluyendo archivos .csv. 
+
+En el bloque que aparece a continuación, usarás la función `read_csv()` para importar datos de un archivo .csv llamado "hotel_bookings.csv" en la carpeta del proyecto y guardarlo como un marco de datos llamado `bookings_df`:
+
+Si esta línea provoca un error, copia la línea setwd("projects/Course 7/Week 3") antes de ella. 
+
+```{r}
+bookings_df <- read_csv("hotel_bookings.csv")
+```
+
+## Paso 3: Conocer tus datos
+
+Antes de comenzar a limpiar tus datos, tómate unos momentos para explorarlos. Puedes usar diversas funciones que ya conoces para tener una vista previa de tus datos, entre ellas, la función `head()` en el bloque de código que aparece a continuación:
+
+```{r}
+head(bookings_df)
+```
+
+También puedes resumir o hacer una vista previa de los datos con las funciones `str()` y `glimpse()` para lograr comprender mejor los datos ejecutando los bloques de código que aparecen a continuación:
+
+```{r}
+str(bookings_df)
+```
+
+```{r}
+glimpse(bookings_df)
+```
+
+También puedes usar `colnames()` para comprobar los nombres de las columnas en tu conjunto de datos. Ejecuta el bloque de código que aparece a continuación para averiguar los nombres de las columnas en este conjunto de datos:
+
+```{r}
+colnames(bookings_df)
+```
+
+Algunos paquetes contienen funciones más avanzadas para resumir y explorar tus datos. Un ejemplo es el paquete `skimr`, que tiene varias funciones con esta finalidad. Por ejemplo, la función `skim_without_charts()` ofrece un resumen detallado de los datos. Intenta ejecutar el código que aparece debajo:
+
+```{r}
+skim_without_charts(bookings_df)
+```
+
+## Paso 4: Limpiar los datos
+
+Según las funciones que usaste hasta ahora, ¿cómo describirías tus datos en un informe a tu interesado? Ahora bien, digamos que te interesan principalmente las siguientes variables: 'hotel', 'is_canceled' y 'lead_time'. Crea un nuevo marco de datos solo con esas columnas y llámalo `trimmed_df` agregando los nombres de variable a este bloque de código:
+
+```{r}
+trimmed_df <- bookings_df %>% 
+  select( , , )
+```
+
+Recuerda consultar el documento de soluciones si te está costando rellenar cualquiera de estos bloques de código. 
+
+Quizás observes que algunos de los nombres de columna no son muy intuitivos, así que puede ser que desees renombrarlos para que sean más fáciles de comprender. Es posible que quieras crear el mismo marco de datos que aparece arriba, pero renombrar la variable 'hotel' como 'hotel_type' para dejar bien en claro de qué se tratan los datos.
+
+Rellena el espacio a la izquierda del símbolo '=' con el nuevo nombre de la variable:
+
+```{r}
+trimmed_df %>% 
+  select(hotel, is_canceled, lead_time) %>% 
+  rename( = hotel)
+```
+
+Otra tarea común es dividir o combinar datos en diferentes columnas. En este ejemplo, puedes combinar el mes y el año de llegada en una columna usando la función unite():
+
+```{r}
+example_df <- bookings_df %>%
+  select(arrival_date_year, arrival_date_month) %>% 
+  unite(arrival_month_year, c("arrival_date_month", "arrival_date_year"), sep = " ")
+```
+
+## Paso 5: Otra manera de hacer las cosas
+
+También puedes usar la función `mutate()` para hacer cambios en tus columnas. Digamos que quieres crear una nueva columna que sume todos los adultos, niños y bebés en una reserva para averiguar la cantidad total de personas: Modifica el bloque de código debajo para crear esa nueva columna:  
+
+```{r}
+example_df <- bookings_df %>%
+  mutate(guests = )
+
+head(example_df)
+```
+
+Excelente. ¡Ahora es momento de calcular algunas estadísticas de resumen! Calcula el número total de reservas canceladas y el tiempo promedio de antelación de las reservas. Te recomendamos que comiences tu código después del símbolo %>%. Haz una columna llamada 'number_canceled' para representar el número total de reservas canceladas. Luego, haz una columna llamada 'average_lead_time' para representar el tiempo promedio de antelación de las reservas. Usa la función `summarize()` para hacerlo en el bloque de código que aparece a continuación:
+
+```{r}
+
+example_df <- bookings_df %>%
+
+
+head(example_df)
+```
+
+Si tienes problemas para completar cualquiera de los bloques de código en estas actividades, recuerda que puedes consultar los documentos de RMarkdown en 'Solutions' para obtener ayuda. 
+
+## Conclusión de la actividad
+Ahora tienes algo de experiencia en la limpieza y el análisis de datos en `R`; usaste algunas funciones de limpieza básicas como `rename()` y `clean_names()` y realizaste cálculos sobre datos reales. Puedes seguir practicando estas destrezas modificando los bloques de código en el archivo rmd o usar este código como punto de partida en la consola de tu propio proyecto. Una de las razones por las que `R` es una herramienta tan poderosa para el análisis de datos es porque se pueden realizar muchísimas tareas en el mismo lugar. Con las funciones que has estado aprendiendo en este curso, puedes importar datos, crear y visualizar marcos de datos e incluso limpiar datos sin salir de tu consola.  
+
+Asegúrate de marcar esta actividad como finalizada en Coursera.
+
+
+
+
+
+
+
+

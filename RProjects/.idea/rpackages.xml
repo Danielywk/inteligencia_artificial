@@ -12,12 +12,16 @@
         <option value="https://www.rforge.net" />
         <option value="https://cloud.r-project.org" />
         <option value="https://cran.r-project.org" />
+        <option value="https://cran.rstudio.com" />
+        <option value="http://cran.us.r-project.org" />
       </list>
     </option>
     <option name="userRepositoryUrls">
       <list>
         <option value="https://cloud.r-project.org" />
         <option value="https://cran.r-project.org" />
+        <option value="https://cran.rstudio.com" />
+        <option value="http://cran.us.r-project.org" />
       </list>
     </option>
   </component>
