@@ -9,7 +9,7 @@ output: html_notebook
 # ESTABLECIENDO EL WORKSPACE
 The code chunk appears:
 ```{r}
-setwd("/Users/isa/IdeaProjects/RProjects/Ciencia de los datos/Ordinario")
+setwd("/Users/isa/Documents/GitHub/inteligencia_artificial/RProjects/Ciencia de los datos/Ordinario")
 ```
 
 # LIBRERIAS
@@ -28,7 +28,7 @@ library(forcats)
 
 # CARGA DE LA DATA
 ```{r}
-datos <- read.csv("movie_metadata.csv", header = TRUE)
+movies <- read.csv("movie_metadata.csv", header = TRUE)
 ```
 
 # CURANDO LA DATA
@@ -36,7 +36,7 @@ datos <- read.csv("movie_metadata.csv", header = TRUE)
 movies <- movies[!is.na(movies$title_year),]
 movies <- movies[!is.na(movies$budget),]
 movies <- movies[!is.na(movies$imdb_score),]
-
+tibble(movies)
 ```
 
 ```{r}
@@ -47,12 +47,63 @@ delete.na(movies)
 movies <- na.omit(movies)
 ```
 
+
+```{r}
+movies %>%
+  group_by(director_name) %>%
+  drop_na() %>%
+  select(director_name, num_user_for_reviews) %>%
+  summarise(total_user_reviews = sum(num_user_for_reviews), avg_user_reviws = mean(num_user_for_reviews)) %>%
+  arrange(director_name)
+```
+
+# Alternativa
+```{r}
+movies %>%
+  drop_na(num_user_for_reviews) %>%  # Filtrar filas sin críticas
+  group_by(director_name) %>%        # Agrupar por director
+  summarize(
+    total_reviews = sum(num_user_for_reviews, na.rm = TRUE),  # Suma total de críticas
+    avg_reviews = mean(num_user_for_reviews, na.rm = TRUE)    # Promedio de críticas
+  ) %>%
+  arrange(director_name)  # Ordenar alfabéticamente por nombre del director
+```
+
+```{r}
+
+
+```
+
+```{r}
+movies %>% # Canalización
+filter(title_year >= 2001 & title_year <= 2010) %>%
+  group_by(director_name) %>%
+  drop_na() %>%
+summarise(total_user_reviews = sum(num_user_for_reviews), mean_budget = mean(budget), avg_reviews_users = mean(num_user_for_reviews)) %>%
+arrange(director_name)
+```
+
 # COSTO REPRESENTATIVO DE LAS PELÍCULAS EN LOS PRIMEROS 10 AÑOS DEL SIGLO XXI
 ```{r}
-diez<-movies[(movies$title_year>=2001)&(movies$title_year<=2010),]
-mean(diez$budget)
-summary(diez$budget)
+# Filtrar películas entre 2001 y 2010 y eliminar filas sin críticas
+director_nm <- movies[(movies$title_year >= 2001) & (movies$title_year <= 2010) & !is.na(movies$num_user_for_reviews), ]
+
+# Agrupar por director y calcular total y promedio de críticas
+result <- aggregate(num_user_for_reviews ~ director_name, data = director_nm,
+                    FUN = function(x) c(total = sum(x), avg = mean(x)))
+
+# Ajustar el formato del resultado
+result <- do.call(data.frame, result)
+names(result) <- c("director_name", "total_reviews", "avg_reviews")
+
+# Ordenar alfabéticamente por nombre del director
+result <- result[order(result$director_name), ]
+
+# Ver el resultado
+print(result)
 ```
+
+
 
 # VALOR REPRESENTATIVO DEL COSTO DE LAS PRODUCCIONES DE CANADA EN EL 2007
 ```{r}

@@ -40,7 +40,8 @@ En el bloque que aparece a continuación, usarás la función `read_csv()` para 
 Si esta línea provoca un error, copia la línea setwd("projects/Course 7/Week 3") antes de ella. 
 
 ```{r}
-bookings_df <- read_csv("hotel_bookings.csv")
+setwd("/Users/isa/Documents/GitHub/inteligencia_artificial/RProjects/Coursera/Limpieza de datos")
+bookings_df <- read.csv("Hands_ACTIVITY.csv", fileEncoding = "ISO-8859-1")
 ```
 
 ## Paso 3: Conocer tus datos
@@ -79,7 +80,8 @@ Según las funciones que usaste hasta ahora, ¿cómo describirías tus datos en 
 
 ```{r}
 trimmed_df <- bookings_df %>% 
-  select( , , )
+  select(hotel, is_canceled, lead_time)
+tibble(trimmed_df)
 ```
 
 Recuerda consultar el documento de soluciones si te está costando rellenar cualquiera de estos bloques de código. 
@@ -91,7 +93,7 @@ Rellena el espacio a la izquierda del símbolo '=' con el nuevo nombre de la var
 ```{r}
 trimmed_df %>% 
   select(hotel, is_canceled, lead_time) %>% 
-  rename( = hotel)
+  rename(hotel_type = hotel)
 ```
 
 Otra tarea común es dividir o combinar datos en diferentes columnas. En este ejemplo, puedes combinar el mes y el año de llegada en una columna usando la función unite():
@@ -100,6 +102,7 @@ Otra tarea común es dividir o combinar datos en diferentes columnas. En este ej
 example_df <- bookings_df %>%
   select(arrival_date_year, arrival_date_month) %>% 
   unite(arrival_month_year, c("arrival_date_month", "arrival_date_year"), sep = " ")
+tibble(example_df)
 ```
 
 ## Paso 5: Otra manera de hacer las cosas
@@ -108,9 +111,14 @@ También puedes usar la función `mutate()` para hacer cambios en tus columnas. 
 
 ```{r}
 example_df <- bookings_df %>%
-  mutate(guests = )
+  mutate(guests = bookings_df$adultos + bookings_df$ni.os + bookings_df$beb.s)
 
 head(example_df)
+```
+
+
+```{r}
+str(bookings_df)
 ```
 
 Excelente. ¡Ahora es momento de calcular algunas estadísticas de resumen! Calcula el número total de reservas canceladas y el tiempo promedio de antelación de las reservas. Te recomendamos que comiences tu código después del símbolo %>%. Haz una columna llamada 'number_canceled' para representar el número total de reservas canceladas. Luego, haz una columna llamada 'average_lead_time' para representar el tiempo promedio de antelación de las reservas. Usa la función `summarize()` para hacerlo en el bloque de código que aparece a continuación:
@@ -118,7 +126,7 @@ Excelente. ¡Ahora es momento de calcular algunas estadísticas de resumen! Calc
 ```{r}
 
 example_df <- bookings_df %>%
-
+summarise(total_canceled = sum(is_canceled), average_lead_time = mean(lead_time))
 
 head(example_df)
 ```

@@ -71,7 +71,7 @@ penguins2 <- penguins %>%
 tibble(penguins2)
 ```
 
-# Agrupa los datos por la columna isla, oculta o no cuenta las filas con NA
+# Agrupa los datos de la columna isla, oculta o no cuenta las filas con NA
 # y obtiene el promedio de tamaño del pico de los pinguinos
 ```{r}
 penguins %>%
@@ -88,13 +88,14 @@ penguins %>%
         drop_na() %>%
         summarise(max_bill_length_mm = max(bill_length_mm))
 ```
-# Agrupa los datos en base a 4 parámetros: species, island, el pico más grande,
-
+# Agrupa los datos en species e island
+# Obtu¡iene el promedio y el pico más grande,
+# Suma el total de todos los valores de la mediciones
 ```{r}
 penguins %>%
         group_by(species, island) %>%
         drop_na() %>%
-        summarise(max_bl = max(bill_length_mm), mean_bl = mean(bill_length_mm))
+        summarise(max_bl = max(bill_length_mm), mean_bl = mean(bill_length_mm), total_bl = sum(bill_length_mm))
 ```
 
 # Para filtrar los datos en base a una categoria y valor específico
