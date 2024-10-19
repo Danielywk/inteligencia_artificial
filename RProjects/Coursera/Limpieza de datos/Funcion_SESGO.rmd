@@ -1,0 +1,37 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+ # Cragando la data
+```{r}
+library(SimDesign)
+```
+
+# Etableciendo temperaturas actuales y temperaturas predecidas
+```{r}
+actual_temp <- c(68.3, 70, 72.4, 71, 67, 70)
+predicted_temp <- c(67.9, 69, 71.5, 70, 67, 69)
+```
+
+# Aplicando la función de sesgo bias()
+# El resultado arroja un resultado cercano a cero
+# La predicción parcia sesgada a la temperatura más baja
+
+# Nota: Si un modelo no tiene sesgo, será muy cercano a cero
+# Un resultado grande indica que los datos tienen sesgo
+```{r}
+bias(actual_temp, predicted_temp)
+```
+
+# Probando con otro ejemplo
+# La funcion bias() compara el resultado real y el resultado previsto de los datos para determinar la cifra promedio
+# En el cual el resultado real supera al resultado previsto
+```{r}
+actual_sales <- c(150, 203, 137, 247, 116, 287)
+predicted_sales <- c(200, 300, 150, 250, 150, 300)
+```
+
+# Ejecutando bias
+```{r}
+bias(actual_sales, predicted_sales)
+```

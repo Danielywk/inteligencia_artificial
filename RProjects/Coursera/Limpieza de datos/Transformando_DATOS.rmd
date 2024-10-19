@@ -1,0 +1,98 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(skimr)
+library(janitor)
+```
+
+# Generando un nuevo marco de datos
+```{r}
+id <- c(1:10)
+
+name <- c("John Mendes", "Rob Stewart", "Rachel Abrahamson", "Christy Hickman", "Johnson Harper", "Candace Miller", "Carlson Landy", "Pansy Jordan", "Darius Berry", "Claudia Garcia")
+job_title <- c("Professional", "Programmer", "Management", "Clerical", "Developer", "Programmer", "Management", "Clerical", "Developer", "Programmer")
+
+
+employee <- data.frame(id, name, job_title)
+tibble(employee)
+```
+
+# Usando la función "separate" para dividir el el nombre del apellido en otra columna
+```{r}
+employee <- separate(employee, name, into = c("first_name", "lastname"), sep = " ")
+employee
+
+# NOTA: Trabajar este chunk con el de unir nombre y apellido
+```
+
+# Extrayendo nombre y apellido
+```{r}
+name <- employee$first_name
+lasname <- employee$lastmane
+lasname
+```
+
+# Eliminando vectores
+```{r}
+employee <- employee %>%
+        select(-first_name) %>%
+        select(-lastmane)
+employee
+
+# Eliminando de la consola
+rm(name)
+```
+
+# Uniendo nombre y apellido
+```{r}
+unite(employee, "name", first_name, lastname, sep = " ")
+employee
+```
+
+# Usando función mutate para añadir una nueva columna con un cálculo (De gramos a KG)
+```{r}
+library(palmerpenguins)
+
+penguins %>%
+  mutate(body_mass_kg = body_mass_g/1000)
+```
+
+# Trabajando con el dataset del cuarteto A
+# Cargando la libreria
+```{r}
+library(Tmisc)
+quartet
+```
+```{r}
+data(quartet)
+quartet
+colnames(quartet)
+```
+
+# Obteniendo cálculos básicos
+# Media, mediana, desviación estándar y el coeficiente de correlación
+# La desviación estándar nos ayuda a comprender el margen de los valores
+# Correlación nos indica la relación entre 2 variables
+```{r}
+quartet %>%
+        group_by(set) %>% # Agrupar por conjunto
+        summarise(mean(x), sd(x), mean(y), sd(y), cor(x,y))
+```
+# A simple vista, podemos decir que el conjunto de datos gurada una relación entre si
+
+# Comprobar la conjetura con un gráfico de ggplot
+```{r}
+ggplot(quartet, aes(x, y)) + geom_point() + geom_smooth(method = lm, se=FALSE) + facet_wrap(~set)
+```
+
+```{r}
+library(datasauRus)
+```
+```{r}
+ggplot(datasaurus_dozen, aes(x=x, y=y, colour=dataset)) + geom_point() + theme_void() + theme(legend, position="none") + facet_wrap(~dataset)
+```
+

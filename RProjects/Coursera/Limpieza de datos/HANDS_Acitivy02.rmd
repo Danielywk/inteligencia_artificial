@@ -1,0 +1,212 @@
+---
+título: "Lección 3: Cambia tus datos"
+archivo de salida: html_document
+---
+
+## Contexto de esta actividad
+En esta actividad, repasarás un escenario y te enfocarás en manipular y modificar datos reales en R. Aprenderás más acerca de funciones que puedes usar para manipular tus datos, usar resúmenes estadísticos para explorar tus datos y sacar conclusiones iniciales para tus interesados. 
+
+A lo largo de esta actividad, también tendrás la oportunidad de practicar escribir tu propio código haciendo cambios en los bloques de código tú mismo. Si encuentras un error o te trabas, siempre puedes consultar el archivo .rmd Lesson3_Change_Solutions en la carpeta "Solutions" bajo "Week 3" para ver el código correcto completo. 
+
+## El escenario
+En este escenario, eres un analista de datos júnior que trabaja para una empresa de reservas hoteleras. Se te pidió que limpies un archivo .csv que se creó después de consultar una base de datos para combinar dos tablas diferentes de hoteles distintos. Ya realizaste algunas funciones de limpieza básicas sobre estos datos; esta actividad se enfocará en usar funciones para realizar tareas básicas de manipulación de datos.
+
+## Paso 1: Cargar paquetes
+
+Comienza instalando los paquetes requeridos. Si ya instalaste y cargaste `tidyverse`, skimr` y `janitor` en esta sesión, puedes saltearte los bloques de código en este paso. Esto quizás tarde unos minutos en ejecutarse y puede ser que salte una ventana emergente que te pregunte si deseas continuar. Haz clic en sí para seguir instalando los paquetes. 
+
+```{r install packages}
+install.packages("tidyverse")
+install.packages("skimr")
+install.packages("janitor")
+```
+
+Una vez que un paquete está instalado, puedes cargarlo ejecutando la función `library()` con el nombre del paquete dentro de los paréntesis:
+
+```{r load packages}
+library(tidyverse)
+library(skimr)
+library(janitor)
+```
+
+## Paso 2: Importar datos
+
+En el bloque que aparece a continuación, usarás la función `read_csv()` para importar datos de un archivo .csv llamado "hotel_bookings.csv" en la carpeta del proyecto y guardarlo como un marco de datos llamado `hotel_bookings`. 
+
+Si esta línea provoca un error, copia la línea setwd("projects/Course 7/Week 3") antes de ella. 
+
+Escribe el nombre de archivo en el lugar correcto para cargarlo en tu consola R: 
+
+```{r load dataset}
+hotel_bookings <- read_csv("")
+```
+
+## Paso 3: Conocer tus datos
+
+Como estuviste haciendo en otros ejemplos, usarás funciones de resumen para conocer tus datos. Esta vez, completarás los bloques de código que aparecen debajo para usar estas diferentes funciones. Puedes usar la función `head()` para tener una vista previa de las columnas y varias de las primeras filas de datos. Termina el bloque de código que aparece debajo y ejecútalo:
+
+```{r head function}
+head()
+```
+### Cuestionario de práctica 
+
+1. ¿Cuántas columnas hay en este conjunto de datos?
+A: 45
+B: 100
+C: 32
+D: 60
+
+2. La variable 'arrival_date_month' es un dato de tipo chr o código de carácter.  
+A: Verdadero
+B: Falso
+
+Ahora sabes que este conjunto de datos contiene información sobre reservas hoteleras. Cada reserva es una fila en el conjunto de datos y cada columna contiene información como qué tipo de hotel se reservó, cuándo se realizó la reserva y con cuánta antelación se realizó la reserva (la columna 'lead_time').
+
+Además de `head()`, también puedes usar las funciones `str()` y `glimpse()` para obtener resúmenes de cada columna en tus datos organizados horizontalmente. Puedes probar estas dos funciones completando y ejecutando los bloques de código que aparecen a continuación:
+
+```{r str function}
+(hotel_bookings)
+```
+
+Puedes ver los diferentes nombres de columna y algunos valores de muestra a la derecha de los dos puntos. 
+
+```{r glimpse function}
+glimpse()
+```
+
+También puedes usar `colnames()` para obtener los nombres de las columnas en tu conjunto de datos. Ejecuta el bloque de código que aparece debajo para obtener los nombres de las columnas:
+
+```{r colnames function}
+colnames(hotel_bookings)
+```
+
+## Manipular tus datos
+
+Digamos que quieres ordenar los datos de mayor tiempo de antelación a menor tiempo de antelación porque quieres enfocarte en reservas que se realizaron con mucha anticipación. Decides que quieres intentar usar la función `arrange()`; ingresa el nombre de columna correcto después de la coma y ejecuta este bloque de código: 
+
+```{r arrange function}
+arrange(hotel_bookings, )
+```
+
+
+¿Pero por qué hay tantos ceros? Eso se debe a que `arrange()` organiza automáticamente en orden ascendente y debes indicarle específicamente cuándo organizar en orden descendente, como el bloque de código que aparece a continuación:
+
+```{r arrange function descending} 
+arrange(hotel_bookings, desc(lead_time))
+```
+
+Ahora está en el orden que necesitas. Puedes hacer clic en las diferentes páginas de resultados para ver también filas de datos adicionales.  
+
+## Cuestionario de práctica
+¿Cuál es el mayor tiempo de antelación para una reserva de hotel en este conjunto de datos?
+A: 737
+B: 709
+C: 629
+D: 0
+
+Observa que cuando solo ejecutas `arrange()` sin guardar tus datos en un nuevo marco de datos, no modifica el marco de datos existente. Comprueba ejecutando de nuevo `head()` para ver si los mayores tiempos de antelación están primero: 
+
+```{r head function part two}
+head(hotel_bookings)
+```
+
+Esto será verdadero para todas las funciones que usarás en esta actividad. Si quisieras crear un nuevo marco de datos que tuviera guardados estos cambios, usarías el operador de asignación, <- , como está escrito en el bloque de código debajo, para almacenar los datos ordenados en un marco de datos llamado 'hotel_bookings_v2':
+
+```{r new dataframe}
+hotel_bookings_v2 <-
+  arrange(hotel_bookings, desc(lead_time))
+```
+
+Ejecuta `head()`para echarle un vistazo: 
+
+```{r new dataframe part two}
+head(hotel_bookings_v2)
+```
+
+También puedes averiguar los tiempos máximos y mínimos de antelación sin ordenar todo el conjunto de datos usando la función `arrange()`. Prueba usando las funciones max() y min() debajo:
+
+```{r}
+max(hotel_bookings$lead_time)
+```
+
+```{r}
+min(hotel_bookings$lead_time)
+```
+
+Recuerda que, en este caso, necesitas especificar qué conjunto de datos y qué columna usando el símbolo $ entre los nombres. Prueba ejecutar lo siguiente para ver qué pasa si te olvidas una de esas partes:
+
+```{r}
+min(lead_time)
+```
+
+Este es un error común que encuentran los usuarios de R. Para corregir este bloque de código, necesitarás agregar el marco de datos y el signo $ en los lugares adecuados. 
+
+Ahora, digamos que solo quieres saber el tiempo de antelación promedio de las reservas porque tu jefe te pregunta con cuánta anticipación deberías realizar las promociones de habitaciones de hotel. Puedes usar la función `mean()` para responder esa pregunta dado que el promedio de un conjunto de números es también la media de ese conjunto de números:
+
+```{r mean}
+mean(hotel_bookings$lead_time)
+```
+
+Deberías obtener la misma respuesta aun si usas el conjunto de datos v2 que incluyó la función `arrange()`. Esto se debe a que la función `arrange()` no modifica los valores del conjunto de datos, sino que solo los reorganiza.
+
+```{r mean part two}
+mean(hotel_bookings_v2$lead_time)
+```
+
+## Cuestionario de práctica 
+¿Cuál es el tiempo promedio de antelación?
+A: 100.0011
+B: 45.0283
+C: 14.0221
+D: 104.0114
+
+Le pudiste informar a tu jefe cuál es el tiempo promedio de antelación de las reservas, pero ahora quiere saber cuál es el tiempo promedio de antelación de las reservas solamente de los hoteles urbanos. Quieren enfocar la promoción que están realizando, dirigiéndola a grandes ciudades. 
+
+Tú sabes que el primer paso será crear un nuevo conjunto de datos que solo contenga datos sobre hoteles urbanos. Puedes hacerlo usando la función `filter()` y nombrar a tu nuevo marco de datos 'hotel_bookings_city':
+
+```{r filter}
+ <- 
+  filter(hotel_bookings, hotel_bookings$hotel=="City Hotel")
+```
+
+Mira tu nuevo conjunto de datos:
+
+```{r new dataset}
+head(hotel_bookings_city)
+```
+
+Puedes consultar con rapidez cuál es el tiempo de antelación promedio para este conjunto de hoteles, tal como lo hiciste con todos los hoteles antes:
+
+```{r average lead time city hotels}
+mean(hotel_bookings_city$lead_time)
+```
+
+Ahora, tu jefe quiere obtener mucha más información sobre hoteles urbanos, incluyendo tiempo máximo y mínimo de antelación de las reservas. También le interesa en qué difieren a los hoteles tipo resort. No quieres ejecutar cada línea de código una y otra vez, por lo que decides usar las funciones `group_by()`y `summarize()`. También puedes usar el operador de canalización para que tu código sea más fácil de seguir. Almacenarás el nuevo conjunto de datos en un marco de datos llamado 'hotel_summary':
+
+```{r group and summarize}
+hotel_summary <- 
+  hotel_bookings %>%
+  group_by(hotel) %>%
+  summarise(average_lead_time=mean(lead_time),
+            min_lead_time=min(lead_time),
+            max_lead_time=max(lead_time))
+```
+
+Comprueba tu nuevo conjunto de datos usando head() nuevamente:
+
+```{r}
+head(hotel_summary)
+```
+
+
+## Conclusión de la actividad
+Poder manipular datos es una destreza clave para trabajar en `R`. Después de esta actividad, deberías estar más familiarizado con funciones que te permiten modificar tus datos, por ejemplo, `arrange()`, `group_by()` y `filter()`. También tienes algo de experiencia en el uso de resúmenes estadísticos para sacar información de tus datos. Puedes seguir practicando estas destrezas modificando los bloques de código en el archivo rmd o usar este código como punto de partida en la consola de tu propio proyecto. Mientras practicas, analiza cómo la realización de tareas es similar y diferente en `R` en comparación con otras herramientas que aprendiste a lo largo de este programa. 
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,62 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(palmerpenguins)
+library(tidyverse)
+library(lubridate)
+```
+
+
+```{r}
+head(penguins)
+```
+
+
+## Supongamos que quieres modelar la relación entre masa corporal y longitud de aletas en las tres especies de pingüino. Puedes elegir una figura geométrica específica que se adapte al tipo de datos que tienes. Los puntos muestran la relación entre dos variables cuantitativas. Un diagrama de dispersión de puntos sería una manera eficaz de mostrar la relación entre las dos variables. Puedes colocar longitud de aleta en el eje X y masa corporal en el eje Y.
+
+
+## ggplot(data = penguins): En ggplot 2, comienzas un diagrama con la función ggplot(). La función ggplot() crea un sistema de coordenadas al que puedes agregar capas. El primer argumento de la función ggplot() es el conjunto de datos a usar en el diagrama. En este caso, es “penguins”.
+
+# +: Luego agregas un símbolo “+” para agregar una nueva capa a tu diagrama. Completas el diagrama agregando una o más capas a ggplot().
+
+## geom_point(): Luego eliges una figura geométrica agregando una función geométrica. La función geom_point() usa puntos para crear diagramas de dispersión, la función geom_bar usa barras para crear gráficos de barras, etc. En este caso, elige la función geom_point para crear un diagrama de dispersión de puntos. El paquete ggplot2 viene con muchas funciones geométricas diferentes. Obtendrás más información sobre figuras geométricas más adelante en este curso.
+
+## (Mapping = aes(x = flipper_length_mm, y = body_mass_g)): Cada función geométrica en ggplot2 toma un argumento de mapeo. Esto define cómo se aplican variables de tu conjunto de datos a propiedades visuales. El argumento de mapeo siempre se utiliza en conjunto con la función aes(). Los argumentos X e Y de la función aes() especifican qué variables aplicar al eje X y al eje Y del sistema de coordenadas. En este caso, quieres aplicar la variable “flipper_length_mm” al eje X y la variable “body_mass_g” al eje Y
+
+## Atributos estéticos
+# Color: Permite modificar el color de todos los puntos de tu diagrama o el color de cada grupo de datos
+# Tamaño: Permite modificar el tamaño de los puntos de tu diagrama por grupo de datos
+# Forma: Permite modificar la forma de los puntos de tu diagrama por grupo de datos
+```{r}
+ggplot(data = penguins) +
+  geom_point(mapping = aes(x=flipper_length_mm, y=body_mass_g, color=species, shape=species, alpha=species, size=species)) # +
+  # geom_smooth(method = lm, se=FALSE) +
+        # theme(legend, position="none") +
+            # facet_wrap(~species)
+```
+
+# En R la apariencia de una variable se llama estética. por lo tanto, una estética es una propiedad visual
+# de un objeto en el diagrama, como su posición, color, forma o tamaño
+# (mappim=aes(x=?, y=?)): Le indica a R qué estética usar para el diagrama, aes(x, y) para definir el mapeo entre los datos y el diagrama
+# Mapear significa emparejar una variable específica en el conjunto de datos con una estética específica
+
+
+# Consejos para crar un gráfico en R
+# Iniciar con la función ggplot() y seleccionar el conjunto de datos a trabajar
+# Añadir la función geom() para definir el tipo de figura geométrica a utilizar
+# Mapear las variables que queremos gráficar en el argumento de la función aes()
+```{r}
+# Plantilla
+# ggplot(data = <DATA>) +
+#  <geom_FUNCTION>(mapping = aes(x = ?, y = ?))
+
+```
+
+
+```{r}
+ggplot(data = penguins) +
+        geom_smooth(mapping = aes(x=flipper_length_mm, y=body_mass_g))
+```

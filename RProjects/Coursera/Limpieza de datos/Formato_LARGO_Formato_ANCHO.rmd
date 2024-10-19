@@ -1,0 +1,76 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+
+```{r}
+# Repaso
+# Formato largo y formato ancho
+
+# Formato ancho: Tiene observaciones en varias columnas
+# Cada columna contiene datos de una condición diferente de la variable. En este ejemplo, distintos años.
+
+
+# Formato largo: Los datos en formato largo tienen todas las observaciones en una sola columna, y las variables en columnas separadas.
+
+library(palmerpenguins)
+library(tidyverse)
+library(skimr)
+library(janitor)
+```
+
+# El dataset de pinguinos está en formato largo
+```{r}
+penguins
+head(penguins)
+```
+
+# Pasando el dataset de pinguinos a formato largo
+```{r}
+df_penguins <- penguins %>%
+        pivot_wider(
+    names_from = island,          # Serán las nuevas columnas        # X
+    values_from = bill_length_mm, # Los datos que serán distrubuidos # Z
+    values_fn = mean,             # Promediar los duplicados
+    values_fill = NA              # Rellenar con 0 si hay NA
+  ) %>% select(-flipper_length_mm, -bill_depth_mm, -body_mass_g, -sex, -year) # Oculta las filas que no queremos
+        # mutate(Dream = as.integer(Dream)) # Convertir a entero
+df_penguins
+```
+```{r}
+df_penguins <- df_penguins %>%
+  mutate(across(everything(), ~replace_na(.x, 0))) # Rellenar todo el dataset NA con 0
+df_penguins
+```
+
+
+```{r}
+dfrm_penguins <- penguins
+ dfrm_penguins
+```
+# Alternativa más elegantes
+# Formato largo a formato ancho
+```{r}
+dfrm_penguins <- dfrm_penguins %>%
+        select(species, island, bill_length_mm) %>%              # Se seleccionan las columnas de interés
+        mutate(across(everything(), ~replace_na(.x, 0))) # Rellenar todo el dataset NA con 0
+dfrm_penguins
+```
+
+# El siguiente script arroja una tabla con el promedio del tamaño de los picos de los pinguinos
+# Por especie (Eje Y) e isla (Eje X)
+```{r}
+dfrm_penguins <- dfrm_penguins %>%
+        pivot_wider(
+                names_from = island,              # Eje X
+                values_from = bill_length_mm,     # Eje Z -> Promedio del tamaño del pico
+                values_fn = mean,                 # Promedia los valores duplicados
+                values_fill = 0                   # Rellena con cero
+        )
+dfrm_penguins
+```
+```{r}
+
+```
